@@ -7,12 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureHttpJsonOptions(options => JsonSettings.Apply(options.SerializerOptions));
 
+builder.Services.AddClientCors(builder.Configuration);
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<IApplicationRepository, JsonFileApplicationRepository>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 var app = builder.Build();
 
+app.UseClientCors();
 app.MapApplicationEndpoints();
 
 app.Run();
