@@ -4,7 +4,7 @@
     <input
       matInput
       type="search"
-      placeholder="חיפוש לפי חברה, תפקיד, מקור, איש קשר או הערות"
+      placeholder="חיפוש חברה, תפקיד או הערה"
       aria-label="חיפוש"
       [value]="filter().query"
       (input)="onQueryInput($event)"
@@ -14,6 +14,7 @@
   <mat-form-field appearance="outline" subscriptSizing="dynamic" class="status-field">
     <mat-select
       [value]="filter().status"
+      placeholder="כל הסטטוסים"
       (selectionChange)="onStatusChange($event.value)"
       aria-label="סינון לפי סטטוס"
     >

@@ -1,0 +1,11 @@
+<ul class="tiles" aria-label="תמונת מצב">
+  @for (tile of tiles(); track tile.label) {
+    <li class="tile">
+      <span class="icon" [attr.data-tone]="tile.tone">
+        <mat-icon aria-hidden="true">{{ tile.icon }}</mat-icon>
+      </span>
+      <span class="value">{{ tile.value }}</span>
+      <span class="label">{{ tile.label }}</span>
+    </li>
+  }
+</ul>

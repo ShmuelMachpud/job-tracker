@@ -1,0 +1,43 @@
+:host {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  inline-size: 36px;
+  block-size: 36px;
+  border-radius: 10px;
+  background: var(--tone-bg);
+  color: var(--tone-fg);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+:host([data-tone='violet']) {
+  --tone-bg: #eeedfe;
+  --tone-fg: #3c3489;
+}
+
+:host([data-tone='teal']) {
+  --tone-bg: #e1f5ee;
+  --tone-fg: #085041;
+}
+
+:host([data-tone='coral']) {
+  --tone-bg: #faece7;
+  --tone-fg: #712b13;
+}
+
+:host([data-tone='pink']) {
+  --tone-bg: #fbeaf0;
+  --tone-fg: #72243e;
+}
+
+:host([data-tone='blue']) {
+  --tone-bg: #e6f1fb;
+  --tone-fg: #0c447c;
+}
+
+:host([data-tone='amber']) {
+  --tone-bg: #faeeda;
+  --tone-fg: #633806;
+}

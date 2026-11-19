@@ -3,6 +3,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, tap } from 'rxjs';
 
 import { ApplicationsApi } from '../data/applications-api';
+import { computeMetrics } from '../logic/application-metrics';
+import { getFollowUps } from '../logic/follow-ups';
+import { todayIsoDate } from '../logic/iso-date';
 import { ApplicationDetailsRequest } from '../models/application-details-request';
 import { ApplicationStatus } from '../models/application-status';
 import { JobApplication } from '../models/job-application';
@@ -23,6 +26,11 @@ export class ApplicationsStore {
   readonly applications = computed(() =>
     [...this.items()].sort((a, b) => b.appliedAt.localeCompare(a.appliedAt)),
   );
+
+  /** המדדים מחושבים על כל המשרות, בלי קשר לסינון במסך. */
+  readonly metrics = computed(() => computeMetrics(this.items()));
+
+  readonly followUps = computed(() => getFollowUps(this.items(), todayIsoDate()));
 
   load(): void {
     this.state.set('loading');
