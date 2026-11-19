@@ -1,7 +1,9 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable, tap } from 'rxjs';
 
 import { ApplicationsApi } from '../data/applications-api';
+import { ApplicationDetailsRequest } from '../models/application-details-request';
 import { ApplicationStatus } from '../models/application-status';
 import { JobApplication } from '../models/job-application';
 
@@ -31,6 +33,13 @@ export class ApplicationsStore {
       },
       error: () => this.state.set('error'),
     });
+  }
+
+  /** מחזיר Observable כי מי שקרא צריך לדעת אם השמירה הצליחה (למשל כדי לסגור חלון). */
+  create(request: ApplicationDetailsRequest): Observable<JobApplication> {
+    return this.api
+      .create(request)
+      .pipe(tap((created) => this.items.update((list) => [...list, created])));
   }
 
   changeStatus(id: string, status: ApplicationStatus): void {

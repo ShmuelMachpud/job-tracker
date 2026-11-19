@@ -1,0 +1,70 @@
+<h2 mat-dialog-title>הוספת משרה</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <mat-dialog-content>
+    <div class="fields">
+      <mat-form-field appearance="outline">
+        <mat-label>חברה</mat-label>
+        <input matInput formControlName="company" required />
+        <mat-error>חובה למלא חברה</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>תפקיד</mat-label>
+        <input matInput formControlName="role" required />
+        <mat-error>חובה למלא תפקיד</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>תאריך הגשה</mat-label>
+        <input matInput type="date" formControlName="appliedAt" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>מקור</mat-label>
+        <input matInput formControlName="source" placeholder="לינקדאין, חבר, אתר החברה" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>קישור למשרה</mat-label>
+        <input matInput type="url" dir="ltr" formControlName="url" placeholder="https://" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>איש קשר</mat-label>
+        <input matInput formControlName="contact" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>שכר</mat-label>
+        <input matInput formControlName="salary" placeholder="למשל 25-30 אלף" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>פעולה הבאה</mat-label>
+        <input matInput formControlName="nextAction" placeholder="למשל לשלוח מייל מעקב" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>תאריך לפעולה הבאה</mat-label>
+        <input matInput type="date" formControlName="nextActionAt" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>הערות</mat-label>
+        <textarea matInput formControlName="notes" rows="3"></textarea>
+      </mat-form-field>
+    </div>
+
+    @if (saveError()) {
+      <p class="save-error" role="alert">{{ saveError() }}</p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button matButton type="button" mat-dialog-close>ביטול</button>
+    <button matButton="filled" type="submit" [disabled]="saving()">
+      {{ saving() ? 'שומר...' : 'שמירה' }}
+    </button>
+  </mat-dialog-actions>
+</form>
