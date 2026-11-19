@@ -12,6 +12,7 @@ import { createApplicationForm, toDetailsRequest, toFormValue } from '../../form
 import { APPLICATION_STATUSES, ApplicationStatus } from '../../models/application-status';
 import { JobApplication } from '../../models/job-application';
 import { ApplicationsStore } from '../../state/applications-store';
+import { JobLinkImport } from '../job-link-import/job-link-import';
 import { StatusBadge } from '../status-badge/status-badge';
 import { StatusHistory } from '../status-history/status-history';
 
@@ -30,6 +31,7 @@ type BusyState = 'idle' | 'saving' | 'deleting';
 
 @Component({
   imports: [
+    JobLinkImport,
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,

@@ -1,0 +1,56 @@
+@use '@angular/material' as mat;
+
+:host {
+  display: block;
+  margin-block-end: 16px;
+
+  @include mat.theme((density: -3));
+}
+
+.import {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--app-page-background);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  color: var(--app-brand-dark);
+  font-weight: 500;
+
+  mat-icon {
+    font-size: 20px;
+    inline-size: 20px;
+    block-size: 20px;
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.link-field {
+  flex: 1;
+  --mat-form-field-outlined-container-shape: 999px;
+}
+
+.message {
+  margin: 8px 0 0;
+  color: var(--app-brand-accent);
+  font-size: 0.875rem;
+
+  &.error {
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+@media (max-width: 600px) {
+  .row {
+    flex-wrap: wrap;
+  }
+}

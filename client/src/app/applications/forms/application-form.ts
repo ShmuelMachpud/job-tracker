@@ -3,6 +3,7 @@ import { NonNullableFormBuilder, ValidatorFn } from '@angular/forms';
 import { todayIsoDate } from '../logic/iso-date';
 import { ApplicationDetailsRequest } from '../models/application-details-request';
 import { JobApplication } from '../models/job-application';
+import { JobDetailsSuggestion } from '../models/job-details-suggestion';
 
 /** שדה חובה: ריק או רווחים בלבד אינם נחשבים ערך. */
 const notBlank: ValidatorFn = (control) =>
@@ -40,6 +41,34 @@ export function toFormValue(application: JobApplication): ApplicationFormValue {
     nextActionAt: application.nextActionAt ?? '',
     notes: application.notes ?? '',
   };
+}
+
+/** השדות שהצעה מקישור יכולה למלא, עם השם שלהם להודעה למשתמש. */
+const SUGGESTION_FIELDS = [
+  ['company', 'חברה'],
+  ['role', 'תפקיד'],
+  ['source', 'מקור'],
+  ['salary', 'שכר'],
+  ['url', 'קישור'],
+] as const;
+
+/**
+ * ממלא בטופס רק שדות ריקים, כדי לא לדרוס מה שהמשתמש כבר הקליד.
+ * מחזיר את שמות השדות שמולאו.
+ */
+export function applySuggestion(form: ApplicationForm, suggestion: JobDetailsSuggestion): string[] {
+  const filled: string[] = [];
+
+  for (const [field, label] of SUGGESTION_FIELDS) {
+    const control = form.controls[field];
+    const value = suggestion[field];
+    if (value && control.value.trim() === '') {
+      control.setValue(value);
+      filled.push(label);
+    }
+  }
+
+  return filled;
 }
 
 export function toDetailsRequest(value: ApplicationFormValue): ApplicationDetailsRequest {

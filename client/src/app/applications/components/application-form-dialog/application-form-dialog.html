@@ -2,6 +2,10 @@
 
 <form [formGroup]="form" (ngSubmit)="save()" novalidate>
   <mat-dialog-content>
+    @if (!existing) {
+      <app-job-link-import [form]="form" />
+    }
+
     <div class="fields">
       <mat-form-field appearance="outline">
         <mat-label>חברה</mat-label>

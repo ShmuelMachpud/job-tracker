@@ -1,0 +1,30 @@
+<section class="import" aria-labelledby="import-title">
+  <p id="import-title" class="title">
+    <mat-icon aria-hidden="true">link</mat-icon>
+    יש לך קישור למשרה? נמלא את הפרטים בשבילך
+  </p>
+
+  <div class="row">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="link-field">
+      <input
+        matInput
+        type="url"
+        dir="ltr"
+        placeholder="https://"
+        aria-label="קישור למשרה"
+        [formControl]="link"
+        (keydown.enter)="$event.preventDefault(); extract()"
+      />
+    </mat-form-field>
+
+    <button matButton="tonal" type="button" [disabled]="state() === 'loading'" (click)="extract()">
+      {{ state() === 'loading' ? 'קורא את הדף...' : 'מלא פרטים' }}
+    </button>
+  </div>
+
+  @if (message(); as text) {
+    <p class="message" [class.error]="state() === 'error'" [attr.role]="state() === 'error' ? 'alert' : 'status'">
+      {{ text }}
+    </p>
+  }
+</section>
