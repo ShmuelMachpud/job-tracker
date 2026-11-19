@@ -1,0 +1,18 @@
+table {
+  width: 100%;
+}
+
+.status-field {
+  width: 160px;
+  margin-block: 4px;
+}
+
+.muted {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}

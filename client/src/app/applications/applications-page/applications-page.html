@@ -1,0 +1,22 @@
+<header class="page-header">
+  <h1>מעקב חיפוש עבודה</h1>
+  <button matButton="filled">הגשה חדשה</button>
+</header>
+
+@switch (store.loadState()) {
+  @case ('loading') {
+    <mat-progress-bar mode="indeterminate" />
+  }
+  @case ('error') {
+    <div class="load-error">
+      <p>לא הצלחנו לטעון את ההגשות. ודא שהשרת רץ.</p>
+      <button matButton="outlined" (click)="store.load()">נסה שוב</button>
+    </div>
+  }
+  @default {
+    <app-applications-table
+      [applications]="store.applications()"
+      (statusChange)="onStatusChange($event)"
+    />
+  }
+}
