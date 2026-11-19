@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# Job tracker data
+data/
+
 # User-specific files
 *.rsuser
 *.suo

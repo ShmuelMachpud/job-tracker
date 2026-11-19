@@ -14,4 +14,7 @@ public record JobApplication
     public DateOnly? NextActionAt { get; init; }
     public string? Notes { get; init; }
     public ApplicationStatus Status { get; init; }
+    public IReadOnlyList<StatusChange> History { get; init; } = [];
+    public DateTimeOffset CreatedAt { get; init; }
+    public DateTimeOffset UpdatedAt { get; init; }
 }
