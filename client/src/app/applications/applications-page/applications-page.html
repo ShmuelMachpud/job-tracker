@@ -1,38 +1,61 @@
-<header class="page-header">
-  <h1>מעקב חיפוש עבודה</h1>
-  <button matButton="filled" type="button" (click)="openAddDialog()">הוסף משרה</button>
-</header>
+<app-shell>
+  <button shellActions matButton="filled" type="button" (click)="openAddDialog()">
+    <mat-icon>add</mat-icon>
+    הוסף משרה
+  </button>
 
-@switch (store.loadState()) {
-  @case ('loading') {
-    <mat-progress-bar mode="indeterminate" />
-  }
-  @case ('error') {
-    <div class="message">
-      <p>לא הצלחנו לטעון את ההגשות. ודא שהשרת רץ.</p>
-      <button matButton="outlined" (click)="store.load()">נסה שוב</button>
-    </div>
-  }
-  @default {
-    @if (store.applications().length === 0) {
-      <p class="message">עדיין אין משרות. לחץ על "הוסף משרה" כדי להוסיף את הראשונה.</p>
-    } @else {
-      <app-applications-filters [(filter)]="filter" />
+  <header class="page-header">
+    <p class="date">{{ dateLabel }}</p>
+    <h1>{{ greeting }}</h1>
+    @if (store.loadState() === 'loaded') {
+      <p class="summary">{{ summary() }}</p>
+    }
+  </header>
 
-      @if (visibleApplications().length === 0) {
-        <div class="message">
-          <p>לא נמצאו הגשות שמתאימות לסינון.</p>
-          <button matButton="outlined" (click)="clearFilter()">נקה סינון</button>
-        </div>
-      } @else {
-        <p class="count">
-          מוצגות {{ visibleApplications().length }} מתוך {{ store.applications().length }}
-        </p>
-        <app-applications-table
-          [applications]="visibleApplications()"
-          (statusChange)="onStatusChange($event)"
-        />
-      }
+  @switch (store.loadState()) {
+    @case ('loading') {
+      <mat-progress-bar mode="indeterminate" />
+    }
+    @case ('error') {
+      <div class="surface-card message">
+        <p>לא הצלחנו לטעון את המשרות. ודא שהשרת רץ.</p>
+        <button matButton="outlined" (click)="store.load()">נסה שוב</button>
+      </div>
+    }
+    @default {
+      <div class="layout">
+        <aside class="sidebar">
+          <app-application-metrics [metrics]="store.metrics()" />
+          <app-follow-up-list [items]="store.followUps()" />
+        </aside>
+
+        <section class="surface-card list" aria-label="רשימת המשרות">
+          @if (store.applications().length === 0) {
+            <p class="message">עדיין אין משרות. לחץ על "הוסף משרה" כדי להוסיף את הראשונה.</p>
+          } @else {
+            <div class="toolbar">
+              <app-applications-filters [(filter)]="filter" />
+              @if (filterActive()) {
+                <p class="count">
+                  מוצגות {{ visibleApplications().length }} מתוך {{ store.applications().length }}
+                </p>
+              }
+            </div>
+
+            @if (visibleApplications().length === 0) {
+              <div class="message">
+                <p>לא נמצאו משרות שמתאימות לסינון.</p>
+                <button matButton="outlined" (click)="clearFilter()">נקה סינון</button>
+              </div>
+            } @else {
+              <app-applications-table
+                [applications]="visibleApplications()"
+                (statusChange)="onStatusChange($event)"
+              />
+            }
+          }
+        </section>
+      </div>
     }
   }
-}
+</app-shell>

@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, input, output } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 
 import {
@@ -10,6 +10,8 @@ import {
   ApplicationStatus,
 } from '../../models/application-status';
 import { JobApplication } from '../../models/job-application';
+import { CompanyAvatar } from '../company-avatar/company-avatar';
+import { StatusBadge } from '../status-badge/status-badge';
 
 export interface StatusChangeEvent {
   id: string;
@@ -17,7 +19,7 @@ export interface StatusChangeEvent {
 }
 
 @Component({
-  imports: [DatePipe, MatFormFieldModule, MatSelectModule, MatTableModule],
+  imports: [CompanyAvatar, DatePipe, MatIconModule, MatMenuModule, MatTableModule, StatusBadge],
   selector: 'app-applications-table',
   styleUrl: './applications-table.scss',
   templateUrl: './applications-table.html',
@@ -26,7 +28,16 @@ export class ApplicationsTable {
   readonly applications = input.required<JobApplication[]>();
   readonly statusChange = output<StatusChangeEvent>();
 
-  protected readonly columns = ['company', 'role', 'appliedAt', 'status', 'nextAction'];
+  protected readonly columns = ['job', 'status', 'nextAction'];
   protected readonly statuses = APPLICATION_STATUSES;
-  protected readonly statusLabels = APPLICATION_STATUS_LABELS;
+
+  protected statusTriggerLabel(application: JobApplication): string {
+    return `סטטוס: ${APPLICATION_STATUS_LABELS[application.status]}. לחץ לשינוי`;
+  }
+
+  protected selectStatus(application: JobApplication, status: ApplicationStatus): void {
+    if (status !== application.status) {
+      this.statusChange.emit({ id: application.id, status });
+    }
+  }
 }

@@ -1,15 +1,27 @@
+@use '@angular/material' as mat;
+
+:host {
+  display: block;
+
+  // שדות נמוכים יותר (40px במקום 56px) בתוך שורת הסינון בלבד.
+  @include mat.theme((density: -4));
+
+  // מסגרת בהירה ושדות בצורת גלולה, כמו בסקיצה.
+  --mat-form-field-outlined-outline-color: var(--mat-sys-outline-variant);
+  --mat-form-field-outlined-container-shape: 999px;
+}
+
 .filters {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
-  margin-block-end: 16px;
+  gap: 8px;
 }
 
 .search-field {
-  flex: 1 1 280px;
+  flex: 1 1 260px;
 }
 
 .status-field {
-  flex: 0 1 200px;
+  flex: 0 1 180px;
 }

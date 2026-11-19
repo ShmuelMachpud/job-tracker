@@ -1,0 +1,23 @@
+<section
+  class="follow-ups"
+  [class.surface-card]="items().length === 0"
+  [class.has-items]="items().length > 0"
+  aria-labelledby="follow-ups-title"
+>
+  <h2 id="follow-ups-title" class="title">
+    <mat-icon aria-hidden="true">notifications</mat-icon>
+    צריך לעקוב
+    @if (items().length > 0) {
+      <span>· {{ items().length }}</span>
+    }
+  </h2>
+
+  @for (item of items(); track item.application.id) {
+    <div class="item">
+      <div class="company">{{ item.application.company }}</div>
+      <div class="reason">{{ describe(item) }}</div>
+    </div>
+  } @empty {
+    <p class="empty">הכול מעודכן. אין משרות שמחכות לך.</p>
+  }
+</section>

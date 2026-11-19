@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+.follow-ups {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 16px;
+}
+
+.has-items {
+  background: #faeeda;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 4px;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  mat-icon {
+    font-size: 18px;
+    inline-size: 18px;
+    block-size: 18px;
+  }
+}
+
+.has-items .title {
+  color: #633806;
+}
+
+.item {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.company {
+  font-weight: 500;
+}
+
+.reason {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.8125rem;
+}
+
+.empty {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.875rem;
+}

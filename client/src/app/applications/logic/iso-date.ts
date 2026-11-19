@@ -9,3 +9,15 @@ export function todayIsoDate(): IsoDate {
 
   return `${year}-${month}-${day}`;
 }
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+/** כמה ימים עברו מ־from עד to. שלילי אם to לפני from. */
+export function daysBetween(from: IsoDate, to: IsoDate): number {
+  return Math.round((toUtcMs(to) - toUtcMs(from)) / MS_PER_DAY);
+}
+
+function toUtcMs(date: IsoDate): number {
+  const [year, month, day] = date.split('-').map(Number);
+  return Date.UTC(year, month - 1, day);
+}

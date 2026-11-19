@@ -1,0 +1,18 @@
+<div class="frame">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon" aria-hidden="true"></span>
+      <span class="brand-name" dir="ltr">
+        <span class="job">Job</span><span class="tracker">Tracker</span>
+      </span>
+    </div>
+
+    <div class="actions">
+      <ng-content select="[shellActions]" />
+    </div>
+  </header>
+
+  <main class="content">
+    <ng-content />
+  </main>
+</div>
