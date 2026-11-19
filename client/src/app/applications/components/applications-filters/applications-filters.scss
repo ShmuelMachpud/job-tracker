@@ -1,0 +1,15 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-block-end: 16px;
+}
+
+.search-field {
+  flex: 1 1 280px;
+}
+
+.status-field {
+  flex: 0 1 200px;
+}

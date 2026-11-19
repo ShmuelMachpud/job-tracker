@@ -8,15 +8,31 @@
     <mat-progress-bar mode="indeterminate" />
   }
   @case ('error') {
-    <div class="load-error">
+    <div class="message">
       <p>לא הצלחנו לטעון את ההגשות. ודא שהשרת רץ.</p>
       <button matButton="outlined" (click)="store.load()">נסה שוב</button>
     </div>
   }
   @default {
-    <app-applications-table
-      [applications]="store.applications()"
-      (statusChange)="onStatusChange($event)"
-    />
+    @if (store.applications().length === 0) {
+      <p class="message">עדיין אין הגשות. לחץ על "הגשה חדשה" כדי להוסיף את הראשונה.</p>
+    } @else {
+      <app-applications-filters [(filter)]="filter" />
+
+      @if (visibleApplications().length === 0) {
+        <div class="message">
+          <p>לא נמצאו הגשות שמתאימות לסינון.</p>
+          <button matButton="outlined" (click)="clearFilter()">נקה סינון</button>
+        </div>
+      } @else {
+        <p class="count">
+          מוצגות {{ visibleApplications().length }} מתוך {{ store.applications().length }}
+        </p>
+        <app-applications-table
+          [applications]="visibleApplications()"
+          (statusChange)="onStatusChange($event)"
+        />
+      }
+    }
   }
 }
