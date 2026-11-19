@@ -53,3 +53,9 @@
   --badge-bg: #f1efe8;
   --badge-fg: #444441;
 }
+
+:host([data-status='notApplied']) {
+  --badge-bg: transparent;
+  --badge-fg: #5f5e5a;
+  border: 1px dashed #b4b2a9;
+}

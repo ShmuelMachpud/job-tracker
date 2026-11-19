@@ -13,10 +13,10 @@
   </h2>
 
   @for (item of items(); track item.application.id) {
-    <div class="item">
-      <div class="company">{{ item.application.company }}</div>
-      <div class="reason">{{ describe(item) }}</div>
-    </div>
+    <button type="button" class="item" (click)="selected.emit(item.application)">
+      <span class="company">{{ item.application.company }}</span>
+      <span class="reason">{{ describe(item) }}</span>
+    </button>
   } @empty {
     <p class="empty">הכול מעודכן. אין משרות שמחכות לך.</p>
   }

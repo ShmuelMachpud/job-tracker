@@ -20,28 +20,38 @@ public class ApplicationService : IApplicationService
 
     public Task<JobApplication?> GetByIdAsync(Guid id) => _repository.GetByIdAsync(id);
 
-    public async Task<Result<JobApplication>> CreateAsync(ApplicationDetailsRequest request)
+    public async Task<Result<JobApplication>> CreateAsync(CreateApplicationRequest request)
     {
-        var errors = Validate(request);
+        if (request.Details is not { } details)
+        {
+            return Result<JobApplication>.Invalid(
+                new Dictionary<string, string[]> { ["details"] = ["חסרים פרטי המשרה"] }
+            );
+        }
+
+        var errors = Validate(details);
         if (errors.Count > 0)
             return Result<JobApplication>.Invalid(errors);
 
         var now = _time.GetLocalNow();
+        // בלי סטטוס בבקשה, משרה חדשה מתחילה כ"הוגש", כמו קודם
+        var status = request.Status ?? ApplicationStatus.Applied;
+
         var application = new JobApplication
         {
             Id = Guid.NewGuid(),
-            Company = request.Company!.Trim(),
-            Role = request.Role!.Trim(),
-            AppliedAt = request.AppliedAt ?? DateOnly.FromDateTime(now.DateTime),
-            Source = Clean(request.Source),
-            Url = Clean(request.Url),
-            Contact = Clean(request.Contact),
-            Salary = Clean(request.Salary),
-            NextAction = Clean(request.NextAction),
-            NextActionAt = request.NextActionAt,
-            Notes = Clean(request.Notes),
-            Status = ApplicationStatus.Applied,
-            History = [new StatusChange(ApplicationStatus.Applied, now)],
+            Company = details.Company!.Trim(),
+            Role = details.Role!.Trim(),
+            AppliedAt = details.AppliedAt ?? DateOnly.FromDateTime(now.DateTime),
+            Source = Clean(details.Source),
+            Url = Clean(details.Url),
+            Contact = Clean(details.Contact),
+            Salary = Clean(details.Salary),
+            NextAction = Clean(details.NextAction),
+            NextActionAt = details.NextActionAt,
+            Notes = Clean(details.Notes),
+            Status = status,
+            History = [new StatusChange(status, now)],
             CreatedAt = now,
             UpdatedAt = now,
         };

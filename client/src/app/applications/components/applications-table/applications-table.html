@@ -20,6 +20,8 @@
         class="status-trigger"
         [matMenuTriggerFor]="statusMenu"
         [attr.aria-label]="statusTriggerLabel(row)"
+        (click)="$event.stopPropagation()"
+        (keydown.enter)="$event.stopPropagation()"
       >
         <app-status-badge [status]="row.status" />
         <mat-icon aria-hidden="true">expand_more</mat-icon>
@@ -55,5 +57,13 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="columns"></tr>
-  <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: columns"
+    class="clickable"
+    tabindex="0"
+    [attr.aria-label]="rowLabel(row)"
+    (click)="rowSelected.emit(row)"
+    (keydown.enter)="rowSelected.emit(row)"
+  ></tr>
 </table>

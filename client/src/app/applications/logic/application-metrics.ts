@@ -1,5 +1,5 @@
 import { JobApplication } from '../models/job-application';
-import { gotResponse, isClosed, reachedInterview } from './status-groups';
+import { gotResponse, isClosed, reachedInterview, wasSubmitted } from './status-groups';
 
 export interface ApplicationMetrics {
   total: number;
@@ -11,12 +11,13 @@ export interface ApplicationMetrics {
 
 export function computeMetrics(applications: readonly JobApplication[]): ApplicationMetrics {
   const total = applications.length;
+  const submitted = applications.filter(wasSubmitted).length;
   const responded = applications.filter(gotResponse).length;
 
   return {
     total,
     active: applications.filter((application) => !isClosed(application.status)).length,
     interviewed: applications.filter(reachedInterview).length,
-    responseRate: total === 0 ? null : Math.round((responded / total) * 100),
+    responseRate: submitted === 0 ? null : Math.round((responded / submitted) * 100),
   };
 }

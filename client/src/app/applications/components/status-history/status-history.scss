@@ -1,0 +1,45 @@
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-block: 6px;
+    padding-inline-start: 18px;
+  }
+
+  // נקודה וקו אנכי שמחברים בין השלבים.
+  li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 3px;
+    inset-block-start: 50%;
+    inline-size: 7px;
+    block-size: 7px;
+    margin-block-start: -3.5px;
+    border-radius: 50%;
+    background: var(--mat-sys-outline);
+  }
+
+  li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 6px;
+    inset-block: calc(50% + 6px) calc(-50% + 6px);
+    border-inline-start: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  li:first-child::before {
+    background: var(--app-brand);
+  }
+}
+
+.when {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.8125rem;
+}
