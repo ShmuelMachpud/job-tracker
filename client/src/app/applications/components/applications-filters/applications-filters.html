@@ -1,0 +1,30 @@
+<div class="filters">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
+    <mat-icon matPrefix>search</mat-icon>
+    <input
+      matInput
+      type="search"
+      placeholder="חיפוש לפי חברה, תפקיד, מקור, איש קשר או הערות"
+      aria-label="חיפוש"
+      [value]="filter().query"
+      (input)="onQueryInput($event)"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="status-field">
+    <mat-select
+      [value]="filter().status"
+      (selectionChange)="onStatusChange($event.value)"
+      aria-label="סינון לפי סטטוס"
+    >
+      <mat-option [value]="null">כל הסטטוסים</mat-option>
+      @for (status of statuses; track status) {
+        <mat-option [value]="status">{{ statusLabels[status] }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (isActive()) {
+    <button matButton type="button" (click)="clear()">נקה</button>
+  }
+</div>
