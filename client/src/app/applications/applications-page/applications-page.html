@@ -1,6 +1,6 @@
 <header class="page-header">
   <h1>מעקב חיפוש עבודה</h1>
-  <button matButton="filled">הגשה חדשה</button>
+  <button matButton="filled" type="button" (click)="openAddDialog()">הוסף משרה</button>
 </header>
 
 @switch (store.loadState()) {
@@ -15,7 +15,7 @@
   }
   @default {
     @if (store.applications().length === 0) {
-      <p class="message">עדיין אין הגשות. לחץ על "הגשה חדשה" כדי להוסיף את הראשונה.</p>
+      <p class="message">עדיין אין משרות. לחץ על "הוסף משרה" כדי להוסיף את הראשונה.</p>
     } @else {
       <app-applications-filters [(filter)]="filter" />
 
