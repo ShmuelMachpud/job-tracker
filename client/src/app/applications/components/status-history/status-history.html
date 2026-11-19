@@ -1,0 +1,8 @@
+<ol class="timeline">
+  @for (change of entries(); track $index) {
+    <li>
+      <app-status-badge [status]="change.status" />
+      <span class="when">{{ change.at | date: 'dd/MM/yyyy, HH:mm' }}</span>
+    </li>
+  }
+</ol>

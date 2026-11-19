@@ -27,9 +27,14 @@ export interface StatusChangeEvent {
 export class ApplicationsTable {
   readonly applications = input.required<JobApplication[]>();
   readonly statusChange = output<StatusChangeEvent>();
+  readonly rowSelected = output<JobApplication>();
 
   protected readonly columns = ['job', 'status', 'nextAction'];
   protected readonly statuses = APPLICATION_STATUSES;
+
+  protected rowLabel(application: JobApplication): string {
+    return `${application.company}, ${application.role}. לחץ לעריכה`;
+  }
 
   protected statusTriggerLabel(application: JobApplication): string {
     return `סטטוס: ${APPLICATION_STATUS_LABELS[application.status]}. לחץ לשינוי`;

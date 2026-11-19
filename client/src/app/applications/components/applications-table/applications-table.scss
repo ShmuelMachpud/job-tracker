@@ -16,8 +16,17 @@ tr.mat-mdc-row:last-child td.mat-mdc-cell {
   border-block-end: 0;
 }
 
-tr.mat-mdc-row:hover {
-  background: var(--app-page-background);
+tr.clickable {
+  cursor: pointer;
+
+  &:hover {
+    background: var(--app-page-background);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--app-brand);
+    outline-offset: -2px;
+  }
 }
 
 .job {

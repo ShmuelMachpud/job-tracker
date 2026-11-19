@@ -8,6 +8,7 @@ import { getFollowUps } from '../logic/follow-ups';
 import { todayIsoDate } from '../logic/iso-date';
 import { ApplicationDetailsRequest } from '../models/application-details-request';
 import { ApplicationStatus } from '../models/application-status';
+import { CreateApplicationRequest } from '../models/create-application-request';
 import { JobApplication } from '../models/job-application';
 
 export type LoadState = 'idle' | 'loading' | 'loaded' | 'error';
@@ -44,10 +45,20 @@ export class ApplicationsStore {
   }
 
   /** מחזיר Observable כי מי שקרא צריך לדעת אם השמירה הצליחה (למשל כדי לסגור חלון). */
-  create(request: ApplicationDetailsRequest): Observable<JobApplication> {
+  create(request: CreateApplicationRequest): Observable<JobApplication> {
     return this.api
       .create(request)
       .pipe(tap((created) => this.items.update((list) => [...list, created])));
+  }
+
+  update(id: string, request: ApplicationDetailsRequest): Observable<JobApplication> {
+    return this.api.update(id, request).pipe(tap((updated) => this.replace(updated)));
+  }
+
+  delete(id: string): Observable<void> {
+    return this.api
+      .delete(id)
+      .pipe(tap(() => this.items.update((list) => list.filter((item) => item.id !== id))));
   }
 
   changeStatus(id: string, status: ApplicationStatus): void {

@@ -2,6 +2,7 @@ import { NonNullableFormBuilder, ValidatorFn } from '@angular/forms';
 
 import { todayIsoDate } from '../logic/iso-date';
 import { ApplicationDetailsRequest } from '../models/application-details-request';
+import { JobApplication } from '../models/job-application';
 
 /** שדה חובה: ריק או רווחים בלבד אינם נחשבים ערך. */
 const notBlank: ValidatorFn = (control) =>
@@ -24,6 +25,22 @@ export function createApplicationForm(fb: NonNullableFormBuilder) {
 
 export type ApplicationForm = ReturnType<typeof createApplicationForm>;
 export type ApplicationFormValue = ReturnType<ApplicationForm['getRawValue']>;
+
+/** ממלא את הטופס ממשרה קיימת, לעריכה. שדה ריק (null) הופך לטקסט ריק. */
+export function toFormValue(application: JobApplication): ApplicationFormValue {
+  return {
+    company: application.company,
+    role: application.role,
+    appliedAt: application.appliedAt,
+    source: application.source ?? '',
+    url: application.url ?? '',
+    contact: application.contact ?? '',
+    salary: application.salary ?? '',
+    nextAction: application.nextAction ?? '',
+    nextActionAt: application.nextActionAt ?? '',
+    notes: application.notes ?? '',
+  };
+}
 
 export function toDetailsRequest(value: ApplicationFormValue): ApplicationDetailsRequest {
   return {

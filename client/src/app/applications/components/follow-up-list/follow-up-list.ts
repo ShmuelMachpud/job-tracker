@@ -1,7 +1,8 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 import { FollowUp } from '../../logic/follow-ups';
+import { JobApplication } from '../../models/job-application';
 
 @Component({
   imports: [MatIconModule],
@@ -11,6 +12,7 @@ import { FollowUp } from '../../logic/follow-ups';
 })
 export class FollowUpList {
   readonly items = input.required<FollowUp[]>();
+  readonly selected = output<JobApplication>();
 
   protected describe({ reason }: FollowUp): string {
     if (reason.kind === 'waiting') {

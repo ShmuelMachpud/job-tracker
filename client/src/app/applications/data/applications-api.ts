@@ -4,13 +4,15 @@ import { Observable } from 'rxjs';
 
 import { ApplicationDetailsRequest } from '../models/application-details-request';
 import { ApplicationStatus } from '../models/application-status';
+import { CreateApplicationRequest } from '../models/create-application-request';
 import { JobApplication } from '../models/job-application';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ApplicationsApi {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiBaseUrl}/applications`;
+
   getAll(): Observable<JobApplication[]> {
     return this.http.get<JobApplication[]>(this.baseUrl);
   }
@@ -19,7 +21,7 @@ export class ApplicationsApi {
     return this.http.get<JobApplication>(`${this.baseUrl}/${id}`);
   }
 
-  create(request: ApplicationDetailsRequest): Observable<JobApplication> {
+  create(request: CreateApplicationRequest): Observable<JobApplication> {
     return this.http.post<JobApplication>(this.baseUrl, request);
   }
 

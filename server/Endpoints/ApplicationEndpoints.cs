@@ -32,7 +32,7 @@ public static class ApplicationEndpoints
     }
 
     private static async Task<IResult> Create(
-        ApplicationDetailsRequest request,
+        CreateApplicationRequest request,
         IApplicationService service
     )
     {

@@ -7,7 +7,7 @@
 .env
 
 # Job tracker data
-data/
+/storage/
 
 # User-specific files
 *.rsuser

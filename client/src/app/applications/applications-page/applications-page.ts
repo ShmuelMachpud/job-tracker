@@ -5,7 +5,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { ApplicationFormDialog } from '../components/application-form-dialog/application-form-dialog';
+import {
+  ApplicationFormDialog,
+  ApplicationFormDialogData,
+  ApplicationFormDialogResult,
+} from '../components/application-form-dialog/application-form-dialog';
 import { ApplicationMetricsPanel } from '../components/application-metrics/application-metrics';
 import { ApplicationsFilters } from '../components/applications-filters/applications-filters';
 import {
@@ -66,17 +70,29 @@ export class ApplicationsPage implements OnInit {
     this.filter.set(EMPTY_FILTER);
   }
 
-  protected openAddDialog(): void {
+  /** null פותח חלון למשרה חדשה, משרה קיימת פותחת אותה לעריכה. */
+  protected openDialog(application: JobApplication | null): void {
     this.dialog
-      .open<ApplicationFormDialog, void, JobApplication>(ApplicationFormDialog, {
-        width: '640px',
-        maxWidth: '95vw',
-      })
+      .open<ApplicationFormDialog, ApplicationFormDialogData, ApplicationFormDialogResult>(
+        ApplicationFormDialog,
+        { data: { application }, width: '640px', maxWidth: '95vw' },
+      )
       .afterClosed()
-      .subscribe((created) => {
-        if (created) {
-          this.snackBar.open(`המשרה ב־${created.company} נוספה`, 'סגור', { duration: 4000 });
+      .subscribe((result) => {
+        if (result) {
+          this.snackBar.open(resultMessage(result), 'סגור', { duration: 4000 });
         }
       });
+  }
+}
+
+function resultMessage({ kind, application }: ApplicationFormDialogResult): string {
+  switch (kind) {
+    case 'created':
+      return `המשרה ב־${application.company} נוספה`;
+    case 'updated':
+      return 'השינויים נשמרו';
+    case 'deleted':
+      return `המשרה ב־${application.company} נמחקה`;
   }
 }

@@ -1,4 +1,5 @@
 export const APPLICATION_STATUSES = [
+  'notApplied',
   'applied',
   'screening',
   'interview',
@@ -11,6 +12,7 @@ export const APPLICATION_STATUSES = [
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 
 export const APPLICATION_STATUS_LABELS: Record<ApplicationStatus, string> = {
+  notApplied: 'טרם הוגשה',
   applied: 'הוגש',
   screening: 'סינון ראשוני',
   interview: 'ראיון',

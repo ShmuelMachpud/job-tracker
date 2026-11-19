@@ -8,7 +8,11 @@ const CLOSED: ReadonlySet<ApplicationStatus> = new Set(['rejected', 'noResponse'
 const INTERVIEW_STAGE: ReadonlySet<ApplicationStatus> = new Set(['interview', 'homeTask', 'offer']);
 
 /** סטטוסים שאינם תגובה מהחברה. כל סטטוס אחר, גם "נדחה", הוא תגובה. */
-const NO_RESPONSE: ReadonlySet<ApplicationStatus> = new Set(['applied', 'noResponse']);
+const NO_RESPONSE: ReadonlySet<ApplicationStatus> = new Set([
+  'notApplied',
+  'applied',
+  'noResponse',
+]);
 
 export function isClosed(status: ApplicationStatus): boolean {
   return CLOSED.has(status);
@@ -23,6 +27,15 @@ export function gotResponse(application: JobApplication): boolean {
 }
 
 /** בודק את הסטטוס הנוכחי וגם את ההיסטוריה, כי משרה שנדחתה אחרי ראיון עדיין הגיעה לראיון. */
-function everHad(application: JobApplication, matches: (status: ApplicationStatus) => boolean): boolean {
-  return matches(application.status) || application.history.some((change) => matches(change.status));
+function everHad(
+  application: JobApplication,
+  matches: (status: ApplicationStatus) => boolean,
+): boolean {
+  return (
+    matches(application.status) || application.history.some((change) => matches(change.status))
+  );
+}
+
+export function wasSubmitted(application: JobApplication): boolean {
+  return application.status !== 'notApplied';
 }
