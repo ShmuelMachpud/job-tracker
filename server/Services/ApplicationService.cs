@@ -1,0 +1,140 @@
+using Server.Common;
+using Server.Contracts;
+using Server.Data;
+using Server.Models;
+
+namespace Server.Services;
+
+public class ApplicationService : IApplicationService
+{
+    private readonly IApplicationRepository _repository;
+    private readonly TimeProvider _time;
+
+    public ApplicationService(IApplicationRepository repository, TimeProvider time)
+    {
+        _repository = repository;
+        _time = time;
+    }
+
+    public Task<IReadOnlyList<JobApplication>> GetAllAsync() => _repository.GetAllAsync();
+
+    public Task<JobApplication?> GetByIdAsync(Guid id) => _repository.GetByIdAsync(id);
+
+    public async Task<Result<JobApplication>> CreateAsync(ApplicationDetailsRequest request)
+    {
+        var errors = Validate(request);
+        if (errors.Count > 0)
+            return Result<JobApplication>.Invalid(errors);
+
+        var now = _time.GetLocalNow();
+        var application = new JobApplication
+        {
+            Id = Guid.NewGuid(),
+            Company = request.Company!.Trim(),
+            Role = request.Role!.Trim(),
+            AppliedAt = request.AppliedAt ?? DateOnly.FromDateTime(now.DateTime),
+            Source = Clean(request.Source),
+            Url = Clean(request.Url),
+            Contact = Clean(request.Contact),
+            Salary = Clean(request.Salary),
+            NextAction = Clean(request.NextAction),
+            NextActionAt = request.NextActionAt,
+            Notes = Clean(request.Notes),
+            Status = ApplicationStatus.Applied,
+            History = [new StatusChange(ApplicationStatus.Applied, now)],
+            CreatedAt = now,
+            UpdatedAt = now,
+        };
+
+        await _repository.AddAsync(application);
+        return Result<JobApplication>.Success(application);
+    }
+
+    public async Task<Result<JobApplication>> UpdateAsync(
+        Guid id,
+        ApplicationDetailsRequest request
+    )
+    {
+        var errors = Validate(request);
+        if (errors.Count > 0)
+            return Result<JobApplication>.Invalid(errors);
+
+        var existing = await _repository.GetByIdAsync(id);
+        if (existing is null)
+            return Result<JobApplication>.NotFound();
+
+        var updated = existing with
+        {
+            Company = request.Company!.Trim(),
+            Role = request.Role!.Trim(),
+            AppliedAt = request.AppliedAt ?? existing.AppliedAt,
+            Source = Clean(request.Source),
+            Url = Clean(request.Url),
+            Contact = Clean(request.Contact),
+            Salary = Clean(request.Salary),
+            NextAction = Clean(request.NextAction),
+            NextActionAt = request.NextActionAt,
+            Notes = Clean(request.Notes),
+            UpdatedAt = _time.GetLocalNow(),
+        };
+
+        return await SaveAsync(updated);
+    }
+
+    public async Task<Result<JobApplication>> ChangeStatusAsync(
+        Guid id,
+        ChangeStatusRequest request
+    )
+    {
+        if (request.Status is not { } newStatus)
+        {
+            return Result<JobApplication>.Invalid(
+                new Dictionary<string, string[]> { ["status"] = ["חובה לבחור סטטוס"] }
+            );
+        }
+
+        var existing = await _repository.GetByIdAsync(id);
+        if (existing is null)
+            return Result<JobApplication>.NotFound();
+
+        // אותו סטטוס: אין שינוי, ולא רושמים היסטוריה כפולה
+        if (existing.Status == newStatus)
+            return Result<JobApplication>.Success(existing);
+
+        var now = _time.GetLocalNow();
+        var updated = existing with
+        {
+            Status = newStatus,
+            History = [.. existing.History, new StatusChange(newStatus, now)],
+            UpdatedAt = now,
+        };
+
+        return await SaveAsync(updated);
+    }
+
+    public Task<bool> DeleteAsync(Guid id) => _repository.DeleteAsync(id);
+
+    private async Task<Result<JobApplication>> SaveAsync(JobApplication application)
+    {
+        var saved = await _repository.UpdateAsync(application);
+        return saved
+            ? Result<JobApplication>.Success(application)
+            : Result<JobApplication>.NotFound();
+    }
+
+    private static Dictionary<string, string[]> Validate(ApplicationDetailsRequest request)
+    {
+        var errors = new Dictionary<string, string[]>();
+
+        if (string.IsNullOrWhiteSpace(request.Company))
+            errors["company"] = ["חובה למלא חברה"];
+        if (string.IsNullOrWhiteSpace(request.Role))
+            errors["role"] = ["חובה למלא תפקיד"];
+
+        return errors;
+    }
+
+    // מחרוזת ריקה או רק רווחים נשמרת כ־null, ומסירים רווחים מהקצוות
+    private static string? Clean(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+}
