@@ -13,7 +13,7 @@ builder.Services.AddClientCors(builder.Configuration);
 builder.Services.AddSingleton(TimeProvider.System);
 
 // משרות
-builder.Services.AddSingleton<IApplicationRepository, JsonFileApplicationRepository>();
+builder.Services.AddDatabase(builder.Configuration, builder.Environment);
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 // חילוץ פרטי משרה מקישור
@@ -35,6 +35,8 @@ builder.Services.AddSingleton<IJobPageExtractor, PageTitleExtractor>();
 builder.Services.AddScoped<IJobExtractionService, JobExtractionService>();
 
 var app = builder.Build();
+
+await app.PrepareDatabaseAsync();
 
 app.UseClientCors();
 
