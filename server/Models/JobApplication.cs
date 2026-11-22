@@ -2,6 +2,7 @@ namespace Server.Models;
 
 public record JobApplication
 {
+    public const int MaxNameLength = 200;
     public Guid Id { get; init; }
     public required string Company { get; init; }
     public required string Role { get; init; }

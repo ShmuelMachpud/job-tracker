@@ -1,6 +1,5 @@
 using Server.Common;
 using Server.Contracts;
-using Server.Models;
 using Server.Services;
 
 namespace Server.Endpoints;

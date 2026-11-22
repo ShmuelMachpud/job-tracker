@@ -6,21 +6,16 @@ public static class DatabaseSetup
 {
     public static IServiceCollection AddDatabase(
         this IServiceCollection services,
-        IConfiguration configuration,
-        IHostEnvironment environment
+        IConfiguration configuration
     )
     {
-        // נתיב יחסי מחושב מתיקיית השרת. נתיב מלא (למשל בענן) נשאר כמו שהוא
-        var databasePath = Path.Combine(
-            environment.ContentRootPath,
-            configuration["Storage:DatabasePath"] ?? "storage/jobs.db"
-        );
-        Directory.CreateDirectory(Path.GetDirectoryName(databasePath)!);
+        var connectionString = configuration.GetConnectionString("Jobs")
+            ?? throw new InvalidOperationException(
+                "חסרה מחרוזת החיבור ConnectionStrings:Jobs. במחשב: dotnet user-secrets. בענן: משתנה סביבה."
+            );
 
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite($"Data Source={databasePath}")
-        );
-        services.AddScoped<IApplicationRepository, SqliteApplicationRepository>();
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddScoped<IApplicationRepository, EfApplicationRepository>();
 
         return services;
     }

@@ -5,7 +5,6 @@ import { ApplicationsPage } from './applications/applications-page/applications-
 @Component({
   imports: [ApplicationsPage],
   selector: 'app-root',
-  styleUrl: './app.scss',
   templateUrl: './app.html',
 })
 export class App {}

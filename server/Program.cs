@@ -13,12 +13,12 @@ builder.Services.AddClientCors(builder.Configuration);
 builder.Services.AddSingleton(TimeProvider.System);
 
 // משרות
-builder.Services.AddDatabase(builder.Configuration, builder.Environment);
+builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 // חילוץ פרטי משרה מקישור
-builder.Services
-    .AddHttpClient<IPageFetcher, HttpPageFetcher>(client =>
+builder
+    .Services.AddHttpClient<IPageFetcher, HttpPageFetcher>(client =>
     {
         client.Timeout = TimeSpan.FromSeconds(10);
         client.DefaultRequestHeaders.UserAgent.ParseAdd(
@@ -51,6 +51,5 @@ app.MapFallback("/api/{**path}", () => Results.NotFound());
 
 // כל כתובת אחרת מחזירה את האתר, ו־Angular מחליט מה להציג
 app.MapFallbackToFile("index.html");
-
 
 app.Run();

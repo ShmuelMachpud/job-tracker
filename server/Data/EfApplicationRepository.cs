@@ -3,11 +3,11 @@ using Server.Models;
 
 namespace Server.Data;
 
-public class SqliteApplicationRepository : IApplicationRepository
+public class EfApplicationRepository : IApplicationRepository
 {
     private readonly AppDbContext _db;
 
-    public SqliteApplicationRepository(AppDbContext db)
+    public EfApplicationRepository(AppDbContext db)
     {
         _db = db;
     }

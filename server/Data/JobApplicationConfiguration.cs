@@ -16,8 +16,8 @@ public class JobApplicationConfiguration : IEntityTypeConfiguration<JobApplicati
         builder.ToTable("Applications");
         builder.HasKey(a => a.Id);
 
-        builder.Property(a => a.Company).IsRequired().HasMaxLength(200);
-        builder.Property(a => a.Role).IsRequired().HasMaxLength(200);
+        builder.Property(a => a.Company).IsRequired().HasMaxLength(JobApplication.MaxNameLength);
+        builder.Property(a => a.Role).IsRequired().HasMaxLength(JobApplication.MaxNameLength);
 
         // הסטטוס נשמר כטקסט ("Interview") ולא כמספר, כדי שהוספת סטטוס לא תשבש נתונים קיימים
         builder.Property(a => a.Status).HasConversion<string>().HasMaxLength(20);

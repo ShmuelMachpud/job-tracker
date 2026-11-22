@@ -33,7 +33,7 @@ public class ApplicationService : IApplicationService
         if (errors.Count > 0)
             return Result<JobApplication>.Invalid(errors);
 
-        var now = _time.GetLocalNow();
+        var now = _time.GetUtcNow();
         // בלי סטטוס בבקשה, משרה חדשה מתחילה כ"הוגש", כמו קודם
         var status = request.Status ?? ApplicationStatus.Applied;
 
@@ -42,7 +42,7 @@ public class ApplicationService : IApplicationService
             Id = Guid.NewGuid(),
             Company = details.Company!.Trim(),
             Role = details.Role!.Trim(),
-            AppliedAt = details.AppliedAt ?? DateOnly.FromDateTime(now.DateTime),
+            AppliedAt = details.AppliedAt ?? DateOnly.FromDateTime(_time.GetLocalNow().DateTime),
             Source = Clean(details.Source),
             Url = Clean(details.Url),
             Contact = Clean(details.Contact),
@@ -85,7 +85,7 @@ public class ApplicationService : IApplicationService
             NextAction = Clean(request.NextAction),
             NextActionAt = request.NextActionAt,
             Notes = Clean(request.Notes),
-            UpdatedAt = _time.GetLocalNow(),
+            UpdatedAt = _time.GetUtcNow(),
         };
 
         return await SaveAsync(updated);
@@ -111,7 +111,7 @@ public class ApplicationService : IApplicationService
         if (existing.Status == newStatus)
             return Result<JobApplication>.Success(existing);
 
-        var now = _time.GetLocalNow();
+        var now = _time.GetUtcNow();
         var updated = existing with
         {
             Status = newStatus,
@@ -136,12 +136,23 @@ public class ApplicationService : IApplicationService
     {
         var errors = new Dictionary<string, string[]>();
 
-        if (string.IsNullOrWhiteSpace(request.Company))
-            errors["company"] = ["חובה למלא חברה"];
-        if (string.IsNullOrWhiteSpace(request.Role))
-            errors["role"] = ["חובה למלא תפקיד"];
+        ValidateName(errors, "company", request.Company, "חברה");
+        ValidateName(errors, "role", request.Role, "תפקיד");
 
         return errors;
+    }
+
+    private static void ValidateName(
+        Dictionary<string, string[]> errors,
+        string field,
+        string? value,
+        string label
+    )
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            errors[field] = [$"חובה למלא {label}"];
+        else if (value.Trim().Length > JobApplication.MaxNameLength)
+            errors[field] = [$"השדה {label} ארוך מדי, עד {JobApplication.MaxNameLength} תווים"];
     }
 
     // מחרוזת ריקה או רק רווחים נשמרת כ־null, ומסירים רווחים מהקצוות
