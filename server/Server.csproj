@@ -10,4 +10,23 @@
     <PackageReference Include="AngleSharp" Version="1.10.5" />
   </ItemGroup>
 
+    <!-- בפרסום (dotnet publish): בונים את האתר ומכניסים אותו ל־wwwroot -->
+  <PropertyGroup>
+    <ClientRoot>..\client\</ClientRoot>
+  </PropertyGroup>
+
+  <Target Name="PublishClient" AfterTargets="ComputeFilesToPublish">
+    <Exec WorkingDirectory="$(ClientRoot)" Command="npm ci" />
+    <Exec WorkingDirectory="$(ClientRoot)" Command="npm run build" />
+
+    <ItemGroup>
+      <ClientDistFiles Include="$(ClientRoot)dist\client\browser\**" />
+      <ResolvedFileToPublish Include="@(ClientDistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+
 </Project>
