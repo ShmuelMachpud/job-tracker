@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="1.10.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.15">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.15" />
   </ItemGroup>
 
     <!-- בפרסום (dotnet publish): בונים את האתר ומכניסים אותו ל־wwwroot -->
