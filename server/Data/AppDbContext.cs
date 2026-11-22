@@ -1,14 +1,20 @@
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Server.Models;
 
 namespace Server.Data;
 
-public class AppDbContext : DbContext
+/// <summary>
+/// IDataProtectionKeyContext: המסד שומר גם את מפתחות ההצפנה של עוגיית ההתחברות (ראו DatabaseSetup).
+/// </summary>
+public class AppDbContext : DbContext, IDataProtectionKeyContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options) { }
 
     public DbSet<JobApplication> Applications => Set<JobApplication>();
+
+    public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
