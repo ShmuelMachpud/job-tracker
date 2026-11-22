@@ -35,6 +35,9 @@ builder.Services.AddSingleton<IJobPageExtractor, OpenGraphExtractor>();
 builder.Services.AddSingleton<IJobPageExtractor, PageTitleExtractor>();
 builder.Services.AddScoped<IJobExtractionService, JobExtractionService>();
 
+// בדיקת חיים לפינג החיצוני שמשאיר את השרת ער
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 await app.PrepareDatabaseAsync();
@@ -48,6 +51,10 @@ app.UseStaticFiles();
 // מי המשתמש (מהעוגייה), ומה מותר לו. מכאן והלאה כל נתיב דורש התחברות, חוץ מ־/auth
 app.UseAuthentication();
 app.UseAuthorization();
+
+// פתוח בלי התחברות, ומחזיר רק "Healthy". הוא בכוונה לא פונה למסד:
+// פינג כל כמה דקות היה מונע מהמסד ב־Neon להירדם, ומכלה את שעות העיבוד החינמיות
+app.MapHealthChecks("/health").AllowAnonymous();
 
 app.MapAuthEndpoints();
 app.MapApplicationEndpoints();

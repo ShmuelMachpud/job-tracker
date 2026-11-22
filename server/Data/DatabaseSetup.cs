@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 
 namespace Server.Data;
@@ -16,6 +17,13 @@ public static class DatabaseSetup
 
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped<IApplicationRepository, EfApplicationRepository>();
+
+        // מפתחות ההצפנה של עוגיית ההתחברות נשמרים במסד ולא בקובץ בשרת.
+        // ב־Render הקבצים נמחקים בכל עדכון גרסה והתעוררות, ובלי זה היית צריך להתחבר מחדש בכל פעם
+        services
+            .AddDataProtection()
+            .SetApplicationName("JobTracker")
+            .PersistKeysToDbContext<AppDbContext>();
 
         return services;
     }
