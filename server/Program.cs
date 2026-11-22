@@ -37,7 +37,18 @@ builder.Services.AddScoped<IJobExtractionService, JobExtractionService>();
 var app = builder.Build();
 
 app.UseClientCors();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapApplicationEndpoints();
 app.MapJobExtractionEndpoints();
+
+// כתובת /api שלא קיימת מחזירה 404, ולא את דף האתר
+app.MapFallback("/api/{**path}", () => Results.NotFound());
+
+// כל כתובת אחרת מחזירה את האתר, ו־Angular מחליט מה להציג
+app.MapFallbackToFile("index.html");
+
 
 app.Run();
