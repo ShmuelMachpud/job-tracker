@@ -22,8 +22,9 @@
   </PropertyGroup>
 
   <Target Name="PublishClient" AfterTargets="ComputeFilesToPublish">
-    <Exec WorkingDirectory="$(ClientRoot)" Command="npm ci" />
-    <Exec WorkingDirectory="$(ClientRoot)" Command="npm run build" />
+    <!-- ב־Docker האתר נבנה בשלב נפרד, ולכן שם מדלגים עם -p:SkipClientBuild=true -->
+    <Exec Condition="'$(SkipClientBuild)' != 'true'" WorkingDirectory="$(ClientRoot)" Command="npm ci" />
+    <Exec Condition="'$(SkipClientBuild)' != 'true'" WorkingDirectory="$(ClientRoot)" Command="npm run build" />
 
     <ItemGroup>
       <ClientDistFiles Include="$(ClientRoot)dist\client\browser\**" />
