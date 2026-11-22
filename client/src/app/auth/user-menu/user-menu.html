@@ -1,0 +1,11 @@
+@if (user(); as current) {
+  <span class="email" dir="ltr" [title]="current.name ?? current.email">{{ current.email }}</span>
+}
+
+<!-- טופס POST ולא קישור: התנתקות היא פעולה, ואתר אחר לא אמור להיות מסוגל להפעיל אותה בקישור -->
+<form method="post" [action]="logoutUrl">
+  <button matButton type="submit">
+    <mat-icon>logout</mat-icon>
+    התנתקות
+  </button>
+</form>

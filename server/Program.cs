@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureHttpJsonOptions(options => JsonSettings.Apply(options.SerializerOptions));
 
 builder.Services.AddClientCors(builder.Configuration);
+builder.Services.AddOwnerAuthentication(builder.Configuration);
 builder.Services.AddSingleton(TimeProvider.System);
 
 // משרות
@@ -40,9 +41,15 @@ await app.PrepareDatabaseAsync();
 
 app.UseClientCors();
 
-app.UseDefaultFiles();
+// קובצי JavaScript ו־CSS של האתר מוגשים גם בלי התחברות: אין בהם נתונים.
+// אין כאן UseDefaultFiles: הכתובת "/" מגיעה ל־MapFallbackToFile שלמטה, ושם היא מוגנת.
 app.UseStaticFiles();
 
+// מי המשתמש (מהעוגייה), ומה מותר לו. מכאן והלאה כל נתיב דורש התחברות, חוץ מ־/auth
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapAuthEndpoints();
 app.MapApplicationEndpoints();
 app.MapJobExtractionEndpoints();
 
