@@ -29,6 +29,7 @@ export function job(overrides: Partial<JobApplication> = {}): JobApplication {
     company: 'Acme',
     role: 'Backend',
     appliedAt: '2026-11-01',
+    appliedTime: null,
     source: null,
     url: null,
     contact: null,

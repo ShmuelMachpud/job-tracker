@@ -1,10 +1,11 @@
-import { IsoDate } from './job-application';
+import { IsoDate, IsoTime } from './job-application';
 
 /** מה שהאתר שולח ביצירה ובעדכון. מקביל ל־ApplicationDetailsRequest בשרת. */
 export interface ApplicationDetailsRequest {
   company: string;
   role: string;
   appliedAt: IsoDate | null;
+  appliedTime: IsoTime | null;
   source: string | null;
   url: string | null;
   contact: string | null;

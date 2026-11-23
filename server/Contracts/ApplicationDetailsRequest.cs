@@ -4,6 +4,7 @@ public record ApplicationDetailsRequest(
     string? Company,
     string? Role,
     DateOnly? AppliedAt,
+    TimeOnly? AppliedTime,
     string? Source,
     string? Url,
     string? Contact,

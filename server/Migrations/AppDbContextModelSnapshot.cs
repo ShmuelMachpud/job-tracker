@@ -95,6 +95,9 @@ namespace Server.Migrations
                     b.Property<DateOnly>("AppliedAt")
                         .HasColumnType("date");
 
+                    b.Property<TimeOnly?>("AppliedTime")
+                        .HasColumnType("time without time zone");
+
                     b.Property<string>("Company")
                         .IsRequired()
                         .HasMaxLength(200)

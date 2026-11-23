@@ -14,6 +14,7 @@ export function createApplicationForm(fb: NonNullableFormBuilder) {
     company: ['', notBlank],
     role: ['', notBlank],
     appliedAt: [todayIsoDate()],
+    appliedTime: [''],
     source: [''],
     url: [''],
     contact: [''],
@@ -34,6 +35,8 @@ export function toFormValue(application: JobApplication): ApplicationFormValue {
     company: application.company,
     role: application.role,
     appliedAt: application.appliedAt,
+    // שדה שעה בדפדפן עובד עם "09:30", בלי שניות
+    appliedTime: application.appliedTime?.slice(0, 5) ?? '',
     source: application.source ?? '',
     url: application.url ?? '',
     contact: application.contact ?? '',
@@ -78,6 +81,7 @@ export function toDetailsRequest(value: ApplicationFormValue): ApplicationDetail
     company: value.company.trim(),
     role: value.role.trim(),
     appliedAt: emptyToNull(value.appliedAt),
+    appliedTime: toIsoTime(value.appliedTime),
     source: emptyToNull(value.source),
     url: emptyToNull(value.url),
     contact: emptyToNull(value.contact),
@@ -87,6 +91,15 @@ export function toDetailsRequest(value: ApplicationFormValue): ApplicationDetail
     notes: emptyToNull(value.notes),
     recruiterId: emptyToNull(value.recruiterId),
   };
+}
+
+/** "09:30" מהדפדפן הופך ל־"09:30:00", הפורמט שהשרת מצפה לו. */
+export function toIsoTime(value: string): string | null {
+  const time = value.trim();
+  if (time === '') {
+    return null;
+  }
+  return time.length === 5 ? `${time}:00` : time;
 }
 
 function emptyToNull(value: string): string | null {

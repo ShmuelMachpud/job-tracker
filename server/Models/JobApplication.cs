@@ -7,6 +7,9 @@ public record JobApplication
     public required string Company { get; init; }
     public required string Role { get; init; }
     public DateOnly AppliedAt { get; init; }
+
+    /// <summary>שעת ההגשה לפי שעון ישראל, אם ידועה.</summary>
+    public TimeOnly? AppliedTime { get; init; }
     public string? Source { get; init; }
     public string? Url { get; init; }
     public string? Contact { get; init; }

@@ -72,7 +72,12 @@
                 <dd>{{ job.role }}</dd>
 
                 <dt>{{ job.status === 'notApplied' ? 'נשמרה' : 'הוגשה' }}</dt>
-                <dd>{{ job.appliedAt | date: 'dd/MM/yyyy' }}</dd>
+                <dd>
+                  {{ job.appliedAt | date: 'dd/MM/yyyy' }}
+                  @if (job.appliedTime) {
+                    <span class="secondary">· {{ job.appliedTime.slice(0, 5) }}</span>
+                  }
+                </dd>
 
                 <dt>מגייס</dt>
                 <dd>
@@ -123,7 +128,11 @@
 
             <section class="surface-card history" aria-labelledby="history-title">
               <h2 id="history-title" class="list-title">היסטוריית סטטוסים</h2>
-              <app-status-history [history]="job.history" [createdAt]="job.createdAt" />
+              <app-status-history
+                [history]="job.history"
+                [createdAt]="job.createdAt"
+                [timeKnown]="job.appliedTime !== null"
+              />
             </section>
           </aside>
 

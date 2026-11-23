@@ -73,6 +73,9 @@ export class ApplicationFormDialog {
   protected readonly dateLabel = computed(() =>
     this.status() === 'notApplied' ? 'תאריך שמירה' : 'תאריך הגשה',
   );
+  protected readonly timeLabel = computed(() =>
+    this.status() === 'notApplied' ? 'שעת שמירה' : 'שעת הגשה',
+  );
 
   protected readonly busy = signal<BusyState>('idle');
   protected readonly confirmingDelete = signal(false);
