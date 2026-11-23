@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { UserMenu } from '../../auth/user-menu/user-menu';
 
@@ -14,4 +14,12 @@ import { UserMenu } from '../../auth/user-menu/user-menu';
   styleUrl: './app-shell.scss',
   templateUrl: './app-shell.html',
 })
-export class AppShell {}
+export class AppShell {
+  private readonly router = inject(Router);
+
+  /** "משרות" מסומן גם בדף של משרה אחת, וגם כשהרשימה פתוחה על הארכיון (?view=archive). */
+  protected onJobs(): boolean {
+    const path = this.router.url.split(/[?#]/)[0];
+    return path === '/' || path.startsWith('/jobs/');
+  }
+}

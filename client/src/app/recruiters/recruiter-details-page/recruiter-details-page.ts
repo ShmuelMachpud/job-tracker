@@ -8,11 +8,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 
 import {
-  ApplicationFormDialog,
-  ApplicationFormDialogData,
-  ApplicationFormDialogResult,
-} from '../../applications/components/application-form-dialog/application-form-dialog';
-import {
   ApplicationsTable,
   StatusChangeEvent,
 } from '../../applications/components/applications-table/applications-table';
@@ -97,10 +92,7 @@ export class RecruiterDetailsPage implements OnInit {
   }
 
   protected openJob(application: JobApplication): void {
-    this.dialog.open<ApplicationFormDialog, ApplicationFormDialogData, ApplicationFormDialogResult>(
-      ApplicationFormDialog,
-      { data: { application }, width: '640px', maxWidth: '95vw' },
-    );
+    this.router.navigate(['/jobs', application.id]);
   }
 
   protected onStatusChange({ id, status }: StatusChangeEvent): void {

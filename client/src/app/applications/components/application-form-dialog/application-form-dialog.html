@@ -79,20 +79,6 @@
       </mat-form-field>
     </div>
 
-    @if (existing) {
-      <section class="history" aria-labelledby="history-title">
-        <h3 id="history-title">היסטוריית סטטוסים</h3>
-        <app-status-history [history]="existing.history" />
-      </section>
-
-      @if (log().length > 0) {
-        <section class="history" aria-labelledby="log-title">
-          <h3 id="log-title">יומן קשר על המשרה</h3>
-          <app-interaction-timeline [interactions]="log()" [showJob]="false" />
-        </section>
-      }
-    }
-
     @if (error()) {
       <p class="error" role="alert">{{ error() }}</p>
     }

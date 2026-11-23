@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   ApplicationFormDialog,
@@ -55,6 +55,7 @@ export class ApplicationsPage implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly filter = signal(EMPTY_FILTER);
   protected readonly filterActive = computed(() => isFilterActive(this.filter()));
@@ -89,8 +90,25 @@ export class ApplicationsPage implements OnInit {
   );
 
   ngOnInit(): void {
+    // ?view=archive, כדי שחזרה מדף של משרה בארכיון תחזיר לארכיון
+    if (this.route.snapshot.queryParamMap.get('view') === 'archive') {
+      this.view.set('archive');
+    }
     this.store.ensureLoaded();
     this.recruiters.ensureLoaded();
+  }
+
+  /** הרשימה שנבחרה נשמרת בכתובת, כדי שכפתור "חזור" בדפדפן יחזיר אליה. */
+  protected selectView(view: ListView): void {
+    this.view.set(view);
+    this.router.navigate([], {
+      queryParams: { view: view === 'archive' ? 'archive' : null },
+      replaceUrl: true,
+    });
+  }
+
+  protected openJob(application: JobApplication): void {
+    this.router.navigate(['/jobs', application.id]);
   }
 
   protected onStatusChange({ id, status }: StatusChangeEvent): void {

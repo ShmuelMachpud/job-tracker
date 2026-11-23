@@ -1,0 +1,203 @@
+:host {
+  display: block;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-block-end: 16px;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.875rem;
+  text-decoration: none;
+
+  mat-icon {
+    font-size: 18px;
+    inline-size: 18px;
+    block-size: 18px;
+  }
+
+  &:hover {
+    color: var(--app-brand);
+  }
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-block-end: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 500;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+}
+
+.title {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.subtitle {
+  margin: 2px 0 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-inline-size: 0;
+}
+
+.details {
+  padding: 16px 18px;
+
+  dl {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 10px 16px;
+    align-items: baseline;
+    margin: 0;
+  }
+
+  dt {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.8125rem;
+  }
+
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  a {
+    color: var(--app-brand);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  h2 {
+    margin: 18px 0 6px;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}
+
+.status-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-inline-start: -6px;
+  padding: 2px 2px 2px 6px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mat-sys-on-surface-variant);
+  font: inherit;
+  cursor: pointer;
+
+  mat-icon {
+    font-size: 18px;
+    inline-size: 18px;
+    block-size: 18px;
+  }
+
+  &:hover {
+    background: var(--mat-sys-surface-container-high);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: 2px;
+  }
+}
+
+.menu-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.current {
+  margin: 0;
+  color: var(--mat-sys-primary);
+}
+
+.notes {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.secondary {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.8125rem;
+}
+
+.history app-status-history {
+  display: block;
+  padding: 4px 16px 14px;
+}
+
+.log-body {
+  padding: 8px 16px 12px;
+}
+
+.hint {
+  margin: 8px 0 4px;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.875rem;
+}
+
+app-interaction-timeline {
+  margin-block-start: 12px;
+  border-block-start: 1px solid var(--mat-sys-outline-variant);
+}
+
+.list-title {
+  margin: 0;
+  padding: 14px 16px 6px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.message {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// בטלפון הכפתורים יורדים לשורה משלהם, כדי שלא יצמצמו את שם המשרה
+@media (max-width: 600px) {
+  .header-actions {
+    flex-basis: 100%;
+  }
+}

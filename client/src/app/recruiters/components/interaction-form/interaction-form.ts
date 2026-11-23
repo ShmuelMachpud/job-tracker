@@ -57,6 +57,8 @@ export class InteractionForm implements OnInit {
   readonly recruiter = input.required<Recruiter>();
   /** המשרות של המגייס, לבחירת המשרה שהרשומה עוסקת בה. */
   readonly jobs = input<JobApplication[]>([]);
+  /** בדף של משרה אחת, כל רשומה עוסקת במשרה הזו, ולכן אין בחירה. */
+  readonly fixedJob = input<JobApplication | null>(null);
   /** רשומה לעריכה. בלי רשומה, הטופס מוסיף רשומה חדשה. */
   readonly existing = input<Interaction | null>(null);
 
@@ -116,9 +118,11 @@ export class InteractionForm implements OnInit {
     }
 
     const value = this.form.getRawValue();
+    const existing = this.existing();
     const request: InteractionRequest = {
-      recruiterId: this.recruiter().id,
-      applicationId: value.applicationId || null,
+      // עריכה לא מעבירה רשומה למגייס אחר, גם אם המשרה עברה בינתיים למגייס אחר
+      recruiterId: existing?.recruiterId ?? this.recruiter().id,
+      applicationId: this.fixedJob()?.id ?? (value.applicationId || null),
       date: value.date,
       channel: value.channel,
       direction: value.direction,
@@ -128,7 +132,6 @@ export class InteractionForm implements OnInit {
         : null,
     };
 
-    const existing = this.existing();
     const save$: Observable<InteractionResponse> = existing
       ? this.store.update(existing.id, request)
       : this.store.create(request);
