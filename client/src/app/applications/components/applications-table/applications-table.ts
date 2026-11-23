@@ -11,6 +11,7 @@ import {
   ApplicationStatus,
 } from '../../models/application-status';
 import { JobApplication } from '../../models/job-application';
+import { jobSubtitle, jobTitle } from '../../logic/job-labels';
 import { CompanyAvatar } from '../company-avatar/company-avatar';
 import { StatusBadge } from '../status-badge/status-badge';
 import { Recruiter } from '../../../recruiters/models/recruiter';
@@ -52,6 +53,13 @@ export class ApplicationsTable {
   );
   protected readonly statuses = APPLICATION_STATUSES;
 
+  /** הרכיב לא מוסיף כאן את המגייס לשם: הוא מופיע בעמודה משלו (ובטלפון בשורה מתחת). */
+  protected title(application: JobApplication): string {
+    return jobTitle(application);
+  }
+
+  protected readonly subtitle = jobSubtitle;
+
   protected recruiterFor(application: JobApplication): Recruiter | null {
     return application.recruiterId
       ? (this.recruiters()?.get(application.recruiterId) ?? null)
@@ -59,7 +67,7 @@ export class ApplicationsTable {
   }
 
   protected rowLabel(application: JobApplication): string {
-    return `${application.company}, ${application.role}. לחץ לעריכה`;
+    return `${jobTitle(application)}, ${application.role}. לחץ לעריכה`;
   }
 
   protected statusTriggerLabel(application: JobApplication): string {

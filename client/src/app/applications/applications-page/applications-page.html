@@ -28,6 +28,7 @@
           <app-application-metrics [metrics]="store.metrics()" />
           <app-follow-up-list
             [items]="followUps()"
+            [recruiters]="recruiters.byId()"
             (selected)="openDialog($event)"
             (recruiterSelected)="openRecruiter($event)"
           />

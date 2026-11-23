@@ -6,6 +6,7 @@ import {
   jobCountFor,
   matchRecruiters,
   recruiterLabel,
+  recruiterSubtitle,
 } from './recruiter-summary';
 
 describe('countJobsByRecruiter', () => {
@@ -62,5 +63,23 @@ describe('recruiterLabel', () => {
   it('adds the company in brackets when there is one', () => {
     expect(recruiterLabel(recruiter({ name: 'Dana', company: 'Nisha' }))).toBe('Dana (Nisha)');
     expect(recruiterLabel(recruiter({ name: 'Dana' }))).toBe('Dana');
+  });
+
+  it('does not repeat the company when it is the name itself', () => {
+    expect(recruiterLabel(recruiter({ name: 'connections', company: 'Connections ' }))).toBe(
+      'connections',
+    );
+  });
+});
+
+describe('recruiterSubtitle', () => {
+  it('shows the kind, then the company only when it differs from the name', () => {
+    expect(recruiterSubtitle(recruiter({ kind: 'agency', company: 'Nisha' }))).toBe(
+      'חברת השמה · Nisha',
+    );
+    expect(
+      recruiterSubtitle(recruiter({ name: 'Dialog', kind: 'agency', company: 'Dialog' })),
+    ).toBe('חברת השמה');
+    expect(recruiterSubtitle(recruiter({ kind: 'referrer', company: null }))).toBe('מפנה');
   });
 });

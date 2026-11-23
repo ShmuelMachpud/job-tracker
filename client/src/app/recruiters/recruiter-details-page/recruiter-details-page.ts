@@ -28,7 +28,8 @@ import {
 import { InteractionForm } from '../components/interaction-form/interaction-form';
 import { InteractionTimeline } from '../components/interaction-timeline/interaction-timeline';
 import { interactionsFor } from '../logic/interactions';
-import { RECRUITER_KIND_LABELS, Recruiter } from '../models/recruiter';
+import { recruiterSubtitle } from '../logic/recruiter-summary';
+import { Recruiter } from '../models/recruiter';
 import { InteractionsStore } from '../state/interactions-store';
 import { RecruitersStore } from '../state/recruiters-store';
 
@@ -60,7 +61,7 @@ export class RecruiterDetailsPage implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
 
-  protected readonly kindLabels = RECRUITER_KIND_LABELS;
+  protected readonly subtitle = recruiterSubtitle;
 
   protected readonly recruiter = computed(() => this.store.byId().get(this.id()) ?? null);
 

@@ -3,7 +3,7 @@ import { Component, input, output } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 
 import { CompanyAvatar } from '../../../applications/components/company-avatar/company-avatar';
-import { jobCountFor, RecruiterJobCount } from '../../logic/recruiter-summary';
+import { jobCountFor, RecruiterJobCount, recruiterSubtitle } from '../../logic/recruiter-summary';
 import { RECRUITER_KIND_LABELS, Recruiter } from '../../models/recruiter';
 
 @Component({
@@ -31,10 +31,7 @@ export class RecruitersTable {
     return active === 1 ? 'פעילה אחת' : `${active} פעילות`;
   }
 
-  protected subtitle(recruiter: Recruiter): string {
-    const kind = this.kindLabels[recruiter.kind];
-    return recruiter.company ? `${kind} · ${recruiter.company}` : kind;
-  }
+  protected readonly subtitle = recruiterSubtitle;
 
   protected rowLabel(recruiter: Recruiter): string {
     return `${recruiter.name}, ${this.kindLabels[recruiter.kind]}. לחץ לפרטים`;

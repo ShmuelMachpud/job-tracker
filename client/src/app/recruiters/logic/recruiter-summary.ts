@@ -1,6 +1,6 @@
 import { isClosed } from '../../applications/logic/status-groups';
 import { JobApplication } from '../../applications/models/job-application';
-import { Recruiter, RecruiterKind } from '../models/recruiter';
+import { RECRUITER_KIND_LABELS, Recruiter, RecruiterKind } from '../models/recruiter';
 
 export interface RecruiterJobCount {
   total: number;
@@ -77,9 +77,23 @@ export function matchRecruiters(recruiters: readonly Recruiter[], text: string):
   );
 }
 
+/** החברה, רק כשהיא מוסיפה מידע: רשומה של חברת השמה בלי איש קשר נקראת בשם החברה עצמה. */
+function distinctCompany(recruiter: Recruiter): string | null {
+  const company = recruiter.company?.trim();
+  return company && normalize(company) !== normalize(recruiter.name) ? company : null;
+}
+
 /** הטקסט שמופיע בשדה ובהשלמה: שם, ובסוגריים החברה אם יש. */
 export function recruiterLabel(recruiter: Recruiter): string {
-  return recruiter.company ? `${recruiter.name} (${recruiter.company})` : recruiter.name;
+  const company = distinctCompany(recruiter);
+  return company ? `${recruiter.name} (${company})` : recruiter.name;
+}
+
+/** השורה שמתחת לשם: הסוג, ואחריו החברה. */
+export function recruiterSubtitle(recruiter: Recruiter): string {
+  const kind = RECRUITER_KIND_LABELS[recruiter.kind];
+  const company = distinctCompany(recruiter);
+  return company ? `${kind} · ${company}` : kind;
 }
 
 function normalize(value: string): string {
