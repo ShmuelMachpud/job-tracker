@@ -39,18 +39,41 @@
             <p class="message">עדיין אין משרות. לחץ על "הוסף משרה" כדי להוסיף את הראשונה.</p>
           } @else {
             <div class="toolbar">
+              <mat-button-toggle-group
+                class="views"
+                aria-label="איזו רשימה להציג"
+                hideSingleSelectionIndicator
+                [value]="view()"
+                (change)="view.set($event.value)"
+              >
+                <mat-button-toggle value="active"
+                  >פעילות ({{ viewCounts().active }})</mat-button-toggle
+                >
+                <mat-button-toggle value="archive"
+                  >ארכיון ({{ viewCounts().archive }})</mat-button-toggle
+                >
+              </mat-button-toggle-group>
+
               <app-applications-filters
                 [(filter)]="filter"
                 [recruiters]="recruiters.recruiters()"
               />
               @if (filterActive()) {
                 <p class="count">
-                  מוצגות {{ visibleApplications().length }} מתוך {{ store.applications().length }}
+                  מוצגות {{ visibleApplications().length }} מתוך {{ viewApplications().length }}
                 </p>
               }
             </div>
 
-            @if (visibleApplications().length === 0) {
+            @if (viewApplications().length === 0) {
+              <p class="message">
+                @if (view() === 'archive') {
+                  אין משרות בארכיון. משרה עוברת לכאן כשהסטטוס שלה "נדחה" או "אין מענה".
+                } @else {
+                  אין משרות פעילות. כל המשרות נמצאות בארכיון.
+                }
+              </p>
+            } @else if (visibleApplications().length === 0) {
               <div class="message">
                 <p>לא נמצאו משרות שמתאימות לסינון.</p>
                 <button matButton="outlined" (click)="clearFilter()">נקה סינון</button>

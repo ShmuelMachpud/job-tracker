@@ -1,5 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -18,6 +19,7 @@ import {
   StatusChangeEvent,
 } from '../components/applications-table/applications-table';
 import { FollowUpList } from '../components/follow-up-list/follow-up-list';
+import { countByView, inView, isArchived, ListView } from '../logic/archive';
 import { formatLongDate, greetingFor, summarize } from '../logic/dashboard-summary';
 import { mergeFollowUps } from '../logic/follow-up-entries';
 import { todayIsoDate } from '../logic/iso-date';
@@ -39,6 +41,7 @@ import { RecruitersStore } from '../../recruiters/state/recruiters-store';
     ApplicationsTable,
     FollowUpList,
     MatButtonModule,
+    MatButtonToggleModule,
     MatIconModule,
     MatProgressBarModule,
   ],
@@ -75,8 +78,14 @@ export class ApplicationsPage implements OnInit {
     ),
   );
 
+  /** פעילות או ארכיון. החיפוש והסינון חלים על הרשימה שנבחרה, והמדדים על כל המשרות. */
+  protected readonly view = signal<ListView>('active');
+  protected readonly viewCounts = computed(() => countByView(this.store.applications()));
+  protected readonly viewApplications = computed(() =>
+    inView(this.store.applications(), this.view()),
+  );
   protected readonly visibleApplications = computed(() =>
-    filterApplications(this.store.applications(), this.filter()),
+    filterApplications(this.viewApplications(), this.filter()),
   );
 
   ngOnInit(): void {
@@ -86,6 +95,12 @@ export class ApplicationsPage implements OnInit {
 
   protected onStatusChange({ id, status }: StatusChangeEvent): void {
     this.store.changeStatus(id, status);
+
+    // המשרה נעלמת מהרשימה שבה היא הייתה. ההודעה אומרת לאן היא עברה, כדי שלא ייראה שהיא נמחקה
+    if (isArchived(status) !== (this.view() === 'archive')) {
+      const message = isArchived(status) ? 'המשרה עברה לארכיון' : 'המשרה חזרה לרשימה הפעילה';
+      this.snackBar.open(message, 'סגור', { duration: 4000 });
+    }
   }
 
   protected openRecruiter(recruiter: Recruiter): void {
