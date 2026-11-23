@@ -26,7 +26,11 @@
       <div class="layout">
         <aside class="sidebar">
           <app-application-metrics [metrics]="store.metrics()" />
-          <app-follow-up-list [items]="store.followUps()" (selected)="openDialog($event)" />
+          <app-follow-up-list
+            [items]="followUps()"
+            (selected)="openDialog($event)"
+            (recruiterSelected)="openRecruiter($event)"
+          />
         </aside>
 
         <section class="surface-card list" aria-label="רשימת המשרות">

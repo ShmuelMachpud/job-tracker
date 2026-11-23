@@ -12,12 +12,17 @@
     }
   </h2>
 
-  @for (item of items(); track item.application.id) {
-    <button type="button" class="item" (click)="selected.emit(item.application)">
-      <span class="company">{{ item.application.company }}</span>
+  @for (item of items(); track key(item)) {
+    <button type="button" class="item" (click)="select(item)">
+      <span class="name">
+        @if (item.kind === 'recruiter') {
+          <mat-icon class="kind" aria-label="מגייס">person</mat-icon>
+        }
+        <span class="company">{{ title(item) }}</span>
+      </span>
       <span class="reason">{{ describe(item) }}</span>
     </button>
   } @empty {
-    <p class="empty">הכול מעודכן. אין משרות שמחכות לך.</p>
+    <p class="empty">הכול מעודכן. אין משרות או מגייסים שמחכים לך.</p>
   }
 </section>

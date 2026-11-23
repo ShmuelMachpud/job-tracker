@@ -19,6 +19,7 @@ builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 // מגייסים
 builder.Services.AddScoped<IRecruiterService, RecruiterService>();
+builder.Services.AddScoped<IInteractionService, InteractionService>();
 
 // חילוץ פרטי משרה מקישור
 builder
@@ -62,6 +63,7 @@ app.MapHealthChecks("/health").AllowAnonymous();
 app.MapAuthEndpoints();
 app.MapApplicationEndpoints();
 app.MapRecruiterEndpoints();
+app.MapInteractionEndpoints();
 app.MapJobExtractionEndpoints();
 
 // כתובת /api שלא קיימת מחזירה 404, ולא את דף האתר

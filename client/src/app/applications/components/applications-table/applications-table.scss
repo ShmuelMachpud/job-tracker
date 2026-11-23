@@ -107,3 +107,18 @@ td.mat-mdc-cell {
   margin: 0;
   color: var(--mat-sys-primary);
 }
+
+.mobile-recruiter {
+  display: none;
+}
+
+// בטלפון אין מקום לעמודת מגייס: שם המגייס עובר לשורה של המשרה
+@media (max-width: 600px) {
+  .mat-column-recruiter {
+    display: none;
+  }
+
+  .mobile-recruiter {
+    display: block;
+  }
+}

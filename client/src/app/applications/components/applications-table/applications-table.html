@@ -7,6 +7,10 @@
         <div>
           <div class="company">{{ row.company }}</div>
           <div class="secondary">{{ row.role }} · {{ row.appliedAt | date: 'dd/MM/yyyy' }}</div>
+          <!-- בטלפון עמודת המגייס מוסתרת, והשם מופיע כאן -->
+          @if (recruiterFor(row); as recruiter) {
+            <div class="secondary mobile-recruiter">דרך {{ recruiter.name }}</div>
+          }
         </div>
       </div>
     </td>

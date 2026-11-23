@@ -1,0 +1,88 @@
+@use '@angular/material' as mat;
+
+:host {
+  display: block;
+  @include mat.button-density(-2);
+}
+
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  display: flex;
+  gap: 12px;
+  padding-block: 12px;
+  border-block-start: 1px solid var(--mat-sys-outline-variant);
+
+  &:first-child {
+    border-block-start: 0;
+  }
+}
+
+// עיגול עם אייקון הערוץ. הצבע אומר מי פנה: כחול אני, ירוק פנו אליי
+.icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  inline-size: 32px;
+  block-size: 32px;
+  border-radius: 50%;
+  background: #e6effc;
+  color: var(--app-brand);
+
+  &[data-direction='incoming'] {
+    background: #e1f5ee;
+    color: var(--app-brand-accent);
+  }
+
+  mat-icon {
+    font-size: 18px;
+    inline-size: 18px;
+    block-size: 18px;
+  }
+}
+
+.body {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.8125rem;
+}
+
+.job {
+  margin-inline-start: 6px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--app-page-background);
+}
+
+.summary {
+  margin: 4px 0 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.item-actions {
+  display: flex;
+  gap: 4px;
+  margin-block-start: 2px;
+  margin-inline-start: -12px;
+}
+
+.delete {
+  color: var(--mat-sys-error);
+
+  &.confirming {
+    background: var(--mat-sys-error);
+    color: var(--mat-sys-on-error);
+  }
+}

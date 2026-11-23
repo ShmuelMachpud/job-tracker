@@ -79,22 +79,46 @@
             }
           </aside>
 
-          <section class="surface-card list" aria-labelledby="jobs-title">
-            <h2 id="jobs-title" class="list-title">משרות דרך {{ recruiter.name }}</h2>
-            @if (applications.loadState() === 'loading') {
-              <mat-progress-bar mode="indeterminate" />
-            } @else if (jobs().length === 0) {
-              <p class="message">
-                עדיין אין משרות שמקושרות למגייס הזה. אפשר לקשר משרה מחלון העריכה שלה, בשדה "מגייס".
-              </p>
-            } @else {
-              <app-applications-table
-                [applications]="jobs()"
-                (statusChange)="onStatusChange($event)"
-                (rowSelected)="openJob($event)"
-              />
-            }
-          </section>
+          <div class="main">
+            <section class="surface-card list" aria-labelledby="jobs-title">
+              <h2 id="jobs-title" class="list-title">משרות דרך {{ recruiter.name }}</h2>
+              @if (applications.loadState() === 'loading') {
+                <mat-progress-bar mode="indeterminate" />
+              } @else if (jobs().length === 0) {
+                <p class="message">
+                  עדיין אין משרות שמקושרות למגייס הזה. אפשר לקשר משרה מחלון העריכה שלה, בשדה
+                  "מגייס".
+                </p>
+              } @else {
+                <app-applications-table
+                  [applications]="jobs()"
+                  (statusChange)="onStatusChange($event)"
+                  (rowSelected)="openJob($event)"
+                />
+              }
+            </section>
+
+            <section class="surface-card log" aria-labelledby="log-title">
+              <h2 id="log-title" class="list-title">יומן קשר</h2>
+              <div class="log-body">
+                <app-interaction-form [recruiter]="recruiter" [jobs]="jobs()" />
+
+                @if (interactions.loadState() === 'loading') {
+                  <mat-progress-bar mode="indeterminate" />
+                } @else if (log().length === 0) {
+                  <p class="empty-log">
+                    עדיין אין רשומות. כל שיחה, מייל או הודעה שתרשום כאן יעדכנו גם את "קשר אחרון".
+                  </p>
+                } @else {
+                  <app-interaction-timeline
+                    [interactions]="log()"
+                    [jobs]="jobs()"
+                    [recruiter]="recruiter"
+                  />
+                }
+              </div>
+            </section>
+          </div>
         </div>
       } @else {
         <div class="surface-card message">

@@ -41,6 +41,11 @@ export class RecruitersStore {
     }
   }
 
+  /** מגייס שהשתנה בשרת דרך פעולה אחרת (למשל רשומה ביומן שעדכנה את "קשר אחרון"). */
+  replace(updated: Recruiter): void {
+    this.items.update((list) => list.map((item) => (item.id === updated.id ? updated : item)));
+  }
+
   create(request: RecruiterRequest): Observable<Recruiter> {
     return this.api
       .create(request)
@@ -48,15 +53,7 @@ export class RecruitersStore {
   }
 
   update(id: string, request: RecruiterRequest): Observable<Recruiter> {
-    return this.api
-      .update(id, request)
-      .pipe(
-        tap((updated) =>
-          this.items.update((list) =>
-            list.map((item) => (item.id === updated.id ? updated : item)),
-          ),
-        ),
-      );
+    return this.api.update(id, request).pipe(tap((updated) => this.replace(updated)));
   }
 
   /** השרת מנתק את המשרות של המגייס. כאן מנתקים גם את העותק שבזיכרון, בלי לטעון מחדש. */
