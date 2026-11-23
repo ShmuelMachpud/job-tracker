@@ -9,20 +9,6 @@
   grid-column: 1 / -1;
 }
 
-.history {
-  margin-block: 4px 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: var(--app-page-background);
-
-  h3 {
-    margin: 0 0 6px;
-    color: var(--mat-sys-on-surface-variant);
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-}
-
 .error {
   margin: 0;
   color: var(--mat-sys-error);

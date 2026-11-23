@@ -1,0 +1,173 @@
+<app-shell>
+  @switch (store.loadState()) {
+    @case ('loading') {
+      <mat-progress-bar mode="indeterminate" />
+    }
+    @case ('error') {
+      <div class="surface-card message">
+        <p>לא הצלחנו לטעון את המשרה. ודא שהשרת רץ.</p>
+        <button matButton="outlined" (click)="store.load()">נסה שוב</button>
+      </div>
+    }
+    @case ('loaded') {
+      @if (job(); as job) {
+        <a class="back" routerLink="/" [queryParams]="backQuery(job)">
+          <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+          {{ backLabel(job) }}
+        </a>
+
+        <header class="page-header">
+          <app-company-avatar [company]="title()" />
+          <div class="title">
+            <h1>{{ title() }}</h1>
+            <p class="subtitle">{{ subtitle(job) }}</p>
+          </div>
+          <div class="header-actions">
+            @if (link(job); as url) {
+              <a matButton="outlined" [href]="url" target="_blank" rel="noopener noreferrer">
+                <mat-icon>open_in_new</mat-icon>
+                למודעה
+              </a>
+            }
+            <button matButton="outlined" type="button" (click)="edit(job)">
+              <mat-icon>edit</mat-icon>
+              עריכה
+            </button>
+          </div>
+        </header>
+
+        <div class="layout">
+          <aside class="side">
+            <section class="surface-card details" aria-label="פרטי המשרה">
+              <dl>
+                <dt>סטטוס</dt>
+                <dd>
+                  <button
+                    type="button"
+                    class="status-trigger"
+                    [matMenuTriggerFor]="statusMenu"
+                    aria-label="שינוי סטטוס"
+                  >
+                    <app-status-badge [status]="job.status" />
+                    <mat-icon aria-hidden="true">expand_more</mat-icon>
+                  </button>
+                  <mat-menu #statusMenu="matMenu">
+                    @for (status of statuses; track status) {
+                      <button mat-menu-item type="button" (click)="changeStatus(job, status)">
+                        <span class="menu-option">
+                          <app-status-badge [status]="status" />
+                          @if (status === job.status) {
+                            <mat-icon class="current" aria-label="הסטטוס הנוכחי">check</mat-icon>
+                          }
+                        </span>
+                      </button>
+                    }
+                  </mat-menu>
+                </dd>
+
+                <dt>חברה</dt>
+                <dd>{{ job.company }}</dd>
+
+                <dt>תפקיד</dt>
+                <dd>{{ job.role }}</dd>
+
+                <dt>{{ job.status === 'notApplied' ? 'נשמרה' : 'הוגשה' }}</dt>
+                <dd>{{ job.appliedAt | date: 'dd/MM/yyyy' }}</dd>
+
+                <dt>מגייס</dt>
+                <dd>
+                  @if (recruiter(); as recruiter) {
+                    <a [routerLink]="['/recruiters', recruiter.id]">{{ recruiter.name }}</a>
+                  } @else {
+                    -
+                  }
+                </dd>
+
+                <dt>מקור</dt>
+                <dd>{{ job.source || '-' }}</dd>
+
+                @if (job.contact) {
+                  <dt>איש קשר</dt>
+                  <dd>{{ job.contact }}</dd>
+                }
+
+                @if (job.salary) {
+                  <dt>שכר</dt>
+                  <dd>{{ job.salary }}</dd>
+                }
+
+                <dt>פעולה הבאה</dt>
+                <dd>
+                  @if (job.nextAction) {
+                    {{ job.nextAction }}
+                    @if (job.nextActionAt) {
+                      <span class="secondary">· {{ job.nextActionAt | date: 'dd/MM/yyyy' }}</span>
+                    }
+                  } @else {
+                    -
+                  }
+                </dd>
+
+                @if (job.url && !link(job)) {
+                  <!-- קישור שאינו כתובת אינטרנט מוצג כטקסט, כדי שלא יאבד -->
+                  <dt>קישור</dt>
+                  <dd>{{ job.url }}</dd>
+                }
+              </dl>
+
+              @if (job.notes) {
+                <h2>הערות</h2>
+                <p class="notes">{{ job.notes }}</p>
+              }
+            </section>
+
+            <section class="surface-card history" aria-labelledby="history-title">
+              <h2 id="history-title" class="list-title">היסטוריית סטטוסים</h2>
+              <app-status-history [history]="job.history" />
+            </section>
+          </aside>
+
+          <section class="surface-card log" aria-labelledby="log-title">
+            <h2 id="log-title" class="list-title">יומן קשר</h2>
+            <div class="log-body">
+              @if (recruiter(); as recruiter) {
+                <app-interaction-form
+                  [recruiter]="recruiter"
+                  [jobs]="jobAsList()"
+                  [fixedJob]="job"
+                />
+              } @else {
+                <p class="hint">
+                  היומן מתעד שיחות עם מגייס. כדי לרשום כאן שיחות, קשר את המשרה למגייס בחלון העריכה,
+                  בשדה "מגייס".
+                </p>
+              }
+
+              @if (interactions.loadState() === 'loading') {
+                <mat-progress-bar mode="indeterminate" />
+              } @else if (log().length === 0) {
+                @if (recruiter()) {
+                  <p class="hint">
+                    עדיין אין רשומות על המשרה הזו. מה שתרשום כאן יופיע גם ביומן של המגייס.
+                  </p>
+                }
+              } @else {
+                <app-interaction-timeline
+                  [interactions]="log()"
+                  [jobs]="jobAsList()"
+                  [recruiter]="recruiter()"
+                  [showJob]="false"
+                />
+              }
+            </div>
+          </section>
+        </div>
+      } @else {
+        <div class="surface-card message">
+          <p>המשרה לא נמצאה. ייתכן שנמחקה.</p>
+          <a matButton="outlined" routerLink="/">לכל המשרות</a>
+        </div>
+      }
+    }
+  }
+</app-shell>

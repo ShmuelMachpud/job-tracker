@@ -68,7 +68,7 @@ export class ApplicationsTable {
   }
 
   protected rowLabel(application: JobApplication): string {
-    return `${jobTitle(application)}, ${application.role}. לחץ לעריכה`;
+    return `${jobTitle(application)}, ${application.role}. לחץ לפרטי המשרה`;
   }
 
   protected statusTriggerLabel(application: JobApplication): string {

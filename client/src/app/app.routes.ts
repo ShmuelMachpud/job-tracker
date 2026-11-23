@@ -6,6 +6,12 @@ export const routes: Routes = [
   { path: '', component: ApplicationsPage, title: 'משרות · JobTracker' },
   // מסכי המגייסים נטענים רק כשנכנסים אליהם, כדי שהמסך הראשי ייטען מהר
   {
+    path: 'jobs/:id',
+    title: 'משרה · JobTracker',
+    loadComponent: () =>
+      import('./applications/job-details-page/job-details-page').then((m) => m.JobDetailsPage),
+  },
+  {
     path: 'recruiters',
     title: 'מגייסים · JobTracker',
     loadComponent: () =>

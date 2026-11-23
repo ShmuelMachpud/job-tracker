@@ -8,7 +8,7 @@
     </div>
 
     <nav class="tabs" aria-label="ניווט ראשי">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+      <a routerLink="/" [class.active]="onJobs()" [attr.aria-current]="onJobs() ? 'page' : null"
         >משרות</a
       >
       <a routerLink="/recruiters" routerLinkActive="active">מגייסים</a>

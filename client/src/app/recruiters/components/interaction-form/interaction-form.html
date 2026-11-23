@@ -31,7 +31,7 @@
       <mat-error>חובה לבחור תאריך</mat-error>
     </mat-form-field>
 
-    @if (jobs().length > 0) {
+    @if (jobs().length > 0 && !fixedJob()) {
       <mat-form-field appearance="outline">
         <mat-label>על איזו משרה</mat-label>
         <mat-select formControlName="applicationId">

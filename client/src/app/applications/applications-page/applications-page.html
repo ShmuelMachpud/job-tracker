@@ -29,7 +29,7 @@
           <app-follow-up-list
             [items]="followUps()"
             [recruiters]="recruiters.byId()"
-            (selected)="openDialog($event)"
+            (selected)="openJob($event)"
             (recruiterSelected)="openRecruiter($event)"
           />
         </aside>
@@ -44,7 +44,7 @@
                 aria-label="איזו רשימה להציג"
                 hideSingleSelectionIndicator
                 [value]="view()"
-                (change)="view.set($event.value)"
+                (change)="selectView($event.value)"
               >
                 <mat-button-toggle value="active"
                   >פעילות ({{ viewCounts().active }})</mat-button-toggle
@@ -83,7 +83,7 @@
                 [applications]="visibleApplications()"
                 [recruiters]="recruiters.byId()"
                 (statusChange)="onStatusChange($event)"
-                (rowSelected)="openDialog($event)"
+                (rowSelected)="openJob($event)"
               />
             }
           }
