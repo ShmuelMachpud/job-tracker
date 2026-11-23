@@ -19,6 +19,13 @@ public class JobApplicationConfiguration : IEntityTypeConfiguration<JobApplicati
         builder.Property(a => a.Company).IsRequired().HasMaxLength(JobApplication.MaxNameLength);
         builder.Property(a => a.Role).IsRequired().HasMaxLength(JobApplication.MaxNameLength);
 
+        // מחיקת מגייס לא מוחקת את המשרות שלו, רק מנתקת אותן
+        builder
+            .HasOne<Recruiter>()
+            .WithMany()
+            .HasForeignKey(a => a.RecruiterId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         // הסטטוס נשמר כטקסט ("Interview") ולא כמספר, כדי שהוספת סטטוס לא תשבש נתונים קיימים
         builder.Property(a => a.Status).HasConversion<string>().HasMaxLength(20);
 

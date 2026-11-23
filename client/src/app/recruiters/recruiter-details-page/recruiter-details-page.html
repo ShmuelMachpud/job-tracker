@@ -1,0 +1,107 @@
+<app-shell>
+  <a class="back" routerLink="/recruiters">
+    <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+    כל המגייסים
+  </a>
+
+  @switch (store.loadState()) {
+    @case ('loading') {
+      <mat-progress-bar mode="indeterminate" />
+    }
+    @case ('error') {
+      <div class="surface-card message">
+        <p>לא הצלחנו לטעון את המגייס. ודא שהשרת רץ.</p>
+        <button matButton="outlined" (click)="store.load()">נסה שוב</button>
+      </div>
+    }
+    @case ('loaded') {
+      @if (recruiter(); as recruiter) {
+        <header class="page-header">
+          <app-company-avatar [company]="recruiter.name" />
+          <div class="title">
+            <h1>{{ recruiter.name }}</h1>
+            <p class="subtitle">
+              {{ kindLabels[recruiter.kind]
+              }}{{ recruiter.company ? ' · ' + recruiter.company : '' }}
+            </p>
+          </div>
+          <button matButton="outlined" type="button" (click)="edit(recruiter)">
+            <mat-icon>edit</mat-icon>
+            עריכה
+          </button>
+        </header>
+
+        <div class="layout">
+          <aside class="surface-card details" aria-label="פרטי המגייס">
+            <dl>
+              @if (recruiter.phone) {
+                <dt>טלפון</dt>
+                <dd>
+                  <a dir="ltr" [href]="telHref(recruiter.phone)">{{ recruiter.phone }}</a>
+                </dd>
+              }
+              @if (recruiter.email) {
+                <dt>מייל</dt>
+                <dd>
+                  <a dir="ltr" [href]="'mailto:' + recruiter.email">{{ recruiter.email }}</a>
+                </dd>
+              }
+              @if (recruiter.linkedIn) {
+                <dt>LinkedIn</dt>
+                <dd>
+                  <a [href]="recruiter.linkedIn" target="_blank" rel="noopener noreferrer">
+                    לפרופיל
+                  </a>
+                </dd>
+              }
+              <dt>קשר אחרון</dt>
+              <dd>
+                {{ recruiter.lastContactAt ? (recruiter.lastContactAt | date: 'dd/MM/yyyy') : '-' }}
+              </dd>
+              <dt>פעולה הבאה</dt>
+              <dd>
+                @if (recruiter.nextAction) {
+                  {{ recruiter.nextAction }}
+                  @if (recruiter.nextActionAt) {
+                    <span class="secondary"
+                      >· {{ recruiter.nextActionAt | date: 'dd/MM/yyyy' }}</span
+                    >
+                  }
+                } @else {
+                  -
+                }
+              </dd>
+            </dl>
+
+            @if (recruiter.notes) {
+              <h2>הערות</h2>
+              <p class="notes">{{ recruiter.notes }}</p>
+            }
+          </aside>
+
+          <section class="surface-card list" aria-labelledby="jobs-title">
+            <h2 id="jobs-title" class="list-title">משרות דרך {{ recruiter.name }}</h2>
+            @if (applications.loadState() === 'loading') {
+              <mat-progress-bar mode="indeterminate" />
+            } @else if (jobs().length === 0) {
+              <p class="message">
+                עדיין אין משרות שמקושרות למגייס הזה. אפשר לקשר משרה מחלון העריכה שלה, בשדה "מגייס".
+              </p>
+            } @else {
+              <app-applications-table
+                [applications]="jobs()"
+                (statusChange)="onStatusChange($event)"
+                (rowSelected)="openJob($event)"
+              />
+            }
+          </section>
+        </div>
+      } @else {
+        <div class="surface-card message">
+          <p>המגייס לא נמצא. ייתכן שנמחק.</p>
+          <a matButton="outlined" routerLink="/recruiters">לכל המגייסים</a>
+        </div>
+      }
+    }
+  }
+</app-shell>

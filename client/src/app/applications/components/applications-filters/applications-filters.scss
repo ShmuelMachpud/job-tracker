@@ -4,7 +4,11 @@
   display: block;
 
   // שדות נמוכים יותר (40px במקום 56px) בתוך שורת הסינון בלבד.
-  @include mat.theme((density: -4));
+  @include mat.theme(
+    (
+      density: -4,
+    )
+  );
 
   // מסגרת בהירה ושדות בצורת גלולה, כמו בסקיצה.
   --mat-form-field-outlined-outline-color: var(--mat-sys-outline-variant);
@@ -22,6 +26,7 @@
   flex: 1 1 260px;
 }
 
-.status-field {
+.status-field,
+.recruiter-field {
   flex: 0 1 180px;
 }

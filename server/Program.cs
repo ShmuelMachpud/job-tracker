@@ -17,6 +17,9 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
+// מגייסים
+builder.Services.AddScoped<IRecruiterService, RecruiterService>();
+
 // חילוץ פרטי משרה מקישור
 builder
     .Services.AddHttpClient<IPageFetcher, HttpPageFetcher>(client =>
@@ -58,6 +61,7 @@ app.MapHealthChecks("/health").AllowAnonymous();
 
 app.MapAuthEndpoints();
 app.MapApplicationEndpoints();
+app.MapRecruiterEndpoints();
 app.MapJobExtractionEndpoints();
 
 // כתובת /api שלא קיימת מחזירה 404, ולא את דף האתר

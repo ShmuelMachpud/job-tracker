@@ -1,0 +1,66 @@
+@use '@angular/material' as mat;
+
+:host {
+  display: block;
+}
+
+.page-header {
+  margin-block-end: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+}
+
+.summary {
+  margin: 4px 0 0;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 1rem;
+}
+
+.list {
+  overflow: hidden;
+}
+
+.toolbar {
+  padding: 12px 12px 4px;
+}
+
+// שדות נמוכים בצורת גלולה, כמו בסינון של המשרות
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+
+  @include mat.theme(
+    (
+      density: -4,
+    )
+  );
+  --mat-form-field-outlined-outline-color: var(--mat-sys-outline-variant);
+  --mat-form-field-outlined-container-shape: 999px;
+}
+
+.search-field {
+  flex: 1 1 260px;
+}
+
+.kind-field {
+  flex: 0 1 180px;
+}
+
+.count {
+  margin: 8px 0 0;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.8125rem;
+}
+
+.message {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}

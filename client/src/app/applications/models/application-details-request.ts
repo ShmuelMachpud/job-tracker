@@ -12,4 +12,5 @@ export interface ApplicationDetailsRequest {
   nextAction: string | null;
   nextActionAt: IsoDate | null;
   notes: string | null;
+  recruiterId: string | null;
 }

@@ -7,6 +7,13 @@
       </span>
     </div>
 
+    <nav class="tabs" aria-label="ניווט ראשי">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+        >משרות</a
+      >
+      <a routerLink="/recruiters" routerLinkActive="active">מגייסים</a>
+    </nav>
+
     <div class="actions">
       <ng-content select="[shellActions]" />
       <app-user-menu />

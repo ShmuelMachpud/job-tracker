@@ -1,0 +1,30 @@
+<mat-form-field appearance="outline">
+  <mat-label>מגייס</mat-label>
+  <input
+    matInput
+    [formControl]="text"
+    [matAutocomplete]="auto"
+    [errorStateMatcher]="errorMatcher"
+    placeholder="הקלד שם לחיפוש"
+  />
+  @if (hasSelection()) {
+    <button matIconButton matSuffix type="button" aria-label="הסר מגייס" (click)="clear()">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+  <mat-error>בחר מגייס מהרשימה, או צור מגייס חדש</mat-error>
+
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    [displayWith]="display"
+    (optionSelected)="onSelected($event)"
+  >
+    @for (recruiter of options(); track recruiter.id) {
+      <mat-option [value]="recruiter">{{ label(recruiter) }}</mat-option>
+    }
+    <mat-option [value]="newRecruiter" class="new-option">
+      <mat-icon>person_add</mat-icon>
+      {{ typedName() ? 'מגייס חדש: ' + typedName() : 'מגייס חדש' }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

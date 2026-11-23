@@ -19,6 +19,8 @@ export interface JobApplication {
   source: string | null;
   url: string | null;
   contact: string | null;
+  /** המגייס שדרכו המשרה מתנהלת, אם יש. */
+  recruiterId: string | null;
   salary: string | null;
   nextAction: string | null;
   nextActionAt: IsoDate | null;

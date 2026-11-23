@@ -15,6 +15,7 @@ import { ApplicationsStore } from '../../state/applications-store';
 import { JobLinkImport } from '../job-link-import/job-link-import';
 import { StatusBadge } from '../status-badge/status-badge';
 import { StatusHistory } from '../status-history/status-history';
+import { RecruiterPicker } from '../../../recruiters/components/recruiter-picker/recruiter-picker';
 
 /** מה פותחים: null למשרה חדשה, או משרה קיימת לעריכה. */
 export interface ApplicationFormDialogData {
@@ -38,6 +39,7 @@ type BusyState = 'idle' | 'saving' | 'deleting';
     MatInputModule,
     MatSelectModule,
     ReactiveFormsModule,
+    RecruiterPicker,
     StatusBadge,
     StatusHistory,
   ],

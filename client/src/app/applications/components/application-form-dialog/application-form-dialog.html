@@ -41,24 +41,26 @@
         <input matInput type="date" formControlName="appliedAt" />
       </mat-form-field>
 
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>קישור למשרה</mat-label>
+        <input matInput type="url" dir="ltr" formControlName="url" placeholder="https://" />
+      </mat-form-field>
+
       <mat-form-field appearance="outline">
         <mat-label>מקור</mat-label>
         <input matInput formControlName="source" placeholder="לינקדאין, חבר, אתר החברה" />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>קישור למשרה</mat-label>
-        <input matInput type="url" dir="ltr" formControlName="url" placeholder="https://" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>איש קשר</mat-label>
-        <input matInput formControlName="contact" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
         <mat-label>שכר</mat-label>
         <input matInput formControlName="salary" placeholder="למשל 25-30 אלף" />
+      </mat-form-field>
+
+      <app-recruiter-picker [control]="form.controls.recruiterId" />
+
+      <mat-form-field appearance="outline">
+        <mat-label>איש קשר נוסף</mat-label>
+        <input matInput formControlName="contact" />
       </mat-form-field>
 
       <mat-form-field appearance="outline">

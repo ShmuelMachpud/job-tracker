@@ -1,4 +1,4 @@
-import { Component, computed, model } from '@angular/core';
+import { Component, computed, input, model } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +12,7 @@ import {
   APPLICATION_STATUSES,
   ApplicationStatus,
 } from '../../models/application-status';
+import { Recruiter } from '../../../recruiters/models/recruiter';
 
 @Component({
   imports: [MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule],
@@ -21,6 +22,8 @@ import {
 })
 export class ApplicationsFilters {
   readonly filter = model.required<ApplicationFilter>();
+  /** בלי מגייסים, לא מציגים את הסינון לפי מגייס. */
+  readonly recruiters = input<Recruiter[]>([]);
 
   protected readonly statuses = APPLICATION_STATUSES;
   protected readonly statusLabels = APPLICATION_STATUS_LABELS;
@@ -33,6 +36,10 @@ export class ApplicationsFilters {
 
   protected onStatusChange(status: ApplicationStatus | null): void {
     this.filter.update((current) => ({ ...current, status }));
+  }
+
+  protected onRecruiterChange(recruiterId: string | null): void {
+    this.filter.update((current) => ({ ...current, recruiterId }));
   }
 
   protected clear(): void {

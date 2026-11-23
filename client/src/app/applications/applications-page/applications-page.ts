@@ -23,6 +23,7 @@ import { EMPTY_FILTER } from '../models/application-filter';
 import { JobApplication } from '../models/job-application';
 import { ApplicationsStore } from '../state/applications-store';
 import { AppShell } from '../../layout/app-shell/app-shell';
+import { RecruitersStore } from '../../recruiters/state/recruiters-store';
 
 @Component({
   imports: [
@@ -41,6 +42,7 @@ import { AppShell } from '../../layout/app-shell/app-shell';
 })
 export class ApplicationsPage implements OnInit {
   protected readonly store = inject(ApplicationsStore);
+  protected readonly recruiters = inject(RecruitersStore);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
 
@@ -59,7 +61,8 @@ export class ApplicationsPage implements OnInit {
   );
 
   ngOnInit(): void {
-    this.store.load();
+    this.store.ensureLoaded();
+    this.recruiters.ensureLoaded();
   }
 
   protected onStatusChange({ id, status }: StatusChangeEvent): void {
