@@ -41,6 +41,12 @@
         <input matInput type="date" formControlName="appliedAt" />
       </mat-form-field>
 
+      <mat-form-field appearance="outline">
+        <mat-label>{{ timeLabel() }}</mat-label>
+        <input matInput type="time" formControlName="appliedTime" />
+        <mat-hint>לא חובה</mat-hint>
+      </mat-form-field>
+
       <mat-form-field appearance="outline" class="full">
         <mat-label>קישור למשרה</mat-label>
         <input matInput type="url" dir="ltr" formControlName="url" placeholder="https://" />

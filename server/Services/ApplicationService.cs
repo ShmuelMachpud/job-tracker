@@ -42,7 +42,7 @@ public class ApplicationService : IApplicationService
         var now = _time.GetUtcNow();
         // בלי סטטוס בבקשה, משרה חדשה מתחילה כ"הוגש", כמו קודם
         var status = request.Status ?? ApplicationStatus.Applied;
-        var appliedAt = details.AppliedAt ?? DateOnly.FromDateTime(_time.GetLocalNow().DateTime);
+        var appliedAt = details.AppliedAt ?? AppTimeZone.Today(_time);
 
         var application = new JobApplication
         {
@@ -50,6 +50,7 @@ public class ApplicationService : IApplicationService
             Company = details.Company!.Trim(),
             Role = details.Role!.Trim(),
             AppliedAt = appliedAt,
+            AppliedTime = details.AppliedTime,
             Source = Clean(details.Source),
             Url = Clean(details.Url),
             Contact = Clean(details.Contact),
@@ -59,7 +60,7 @@ public class ApplicationService : IApplicationService
             NextActionAt = details.NextActionAt,
             Notes = Clean(details.Notes),
             Status = status,
-            History = [new StatusChange(status, FirstEntryAt(appliedAt, now))],
+            History = [new StatusChange(status, FirstEntryAt(appliedAt, details.AppliedTime, now))],
             CreatedAt = now,
             UpdatedAt = now,
         };
@@ -87,9 +88,10 @@ public class ApplicationService : IApplicationService
             Company = request.Company!.Trim(),
             Role = request.Role!.Trim(),
             AppliedAt = appliedAt,
+            AppliedTime = request.AppliedTime,
             History = WithFirstEntryAt(
                 existing.History,
-                FirstEntryAt(appliedAt, existing.CreatedAt)
+                FirstEntryAt(appliedAt, request.AppliedTime, existing.CreatedAt)
             ),
             Source = Clean(request.Source),
             Url = Clean(request.Url),
@@ -140,15 +142,21 @@ public class ApplicationService : IApplicationService
 
     /// <summary>
     /// מתי לרשום את הסטטוס הראשון בהיסטוריה.
-    /// משרה שנוספה באיחור (למשל בייבוא) הוגשה לפני שנוספה למערכת, ולכן הרשומה הראשונה מקבלת את תאריך ההגשה.
-    /// השעה לא ידועה, ולכן נרשמת חצות (UTC). האתר מזהה רשומה כזו לפי זה שהיא מוקדמת מיצירת המשרה, ומציג רק תאריך.
+    /// עם שעת הגשה: התאריך והשעה שנרשמו.
+    /// בלי שעה, משרה שנוספה באיחור (למשל בייבוא) מקבלת את תאריך ההגשה בחצות (UTC). האתר מזהה רשומה כזו
+    /// לפי זה שהיא מוקדמת מיצירת המשרה ואין שעת הגשה, ומציג רק תאריך.
+    /// אחרת, הרגע שבו המשרה נוספה.
     /// </summary>
-    private DateTimeOffset FirstEntryAt(DateOnly appliedAt, DateTimeOffset createdAt)
+    private static DateTimeOffset FirstEntryAt(
+        DateOnly appliedAt,
+        TimeOnly? appliedTime,
+        DateTimeOffset createdAt
+    )
     {
-        var createdOn = DateOnly.FromDateTime(
-            TimeZoneInfo.ConvertTime(createdAt, _time.LocalTimeZone).DateTime
-        );
-        return appliedAt < createdOn
+        if (appliedTime is { } time)
+            return AppTimeZone.At(appliedAt, time);
+
+        return appliedAt < AppTimeZone.DateOf(createdAt)
             ? new DateTimeOffset(appliedAt.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero)
             : createdAt;
     }

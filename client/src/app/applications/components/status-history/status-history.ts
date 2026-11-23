@@ -15,11 +15,13 @@ export class StatusHistory {
   readonly history = input.required<StatusChange[]>();
   /** מתי המשרה נוספה למערכת. */
   readonly createdAt = input<IsoDateTime | null>(null);
+  /** כשנרשמה שעת הגשה, גם הרשומה הראשונה מוצגת עם שעה. */
+  readonly timeKnown = input(false);
 
   protected readonly entries = computed(() =>
     [...this.history()].reverse().map((change) => ({
       ...change,
-      dateOnly: isBeforeCreation(change, this.createdAt()),
+      dateOnly: !this.timeKnown() && isBeforeCreation(change, this.createdAt()),
     })),
   );
 }
