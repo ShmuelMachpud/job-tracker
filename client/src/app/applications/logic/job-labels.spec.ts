@@ -1,5 +1,5 @@
 import { job } from '../../recruiters/testing/builders';
-import { jobSubtitle, jobTitle } from './job-labels';
+import { jobLink, jobSubtitle, jobTitle } from './job-labels';
 
 describe('jobTitle', () => {
   it('uses the company when it is known', () => {
@@ -28,5 +28,17 @@ describe('jobSubtitle', () => {
   it('shows the role, or that the company is unknown when the role is already the title', () => {
     expect(jobSubtitle(job({ company: 'Wix', role: 'Backend' }))).toBe('Backend');
     expect(jobSubtitle(job({ company: 'לא צוין', role: 'Backend' }))).toBe('חברה לא ידועה');
+  });
+});
+
+describe('jobLink', () => {
+  it('returns web addresses and nothing else', () => {
+    expect(jobLink(job({ url: ' https://jobs.example.com/1 ' }))).toBe(
+      'https://jobs.example.com/1',
+    );
+    expect(jobLink(job({ url: 'http://example.com' }))).toBe('http://example.com');
+    expect(jobLink(job({ url: 'javascript:alert(1)' }))).toBeNull();
+    expect(jobLink(job({ url: 'example.com/job' }))).toBeNull();
+    expect(jobLink(job({ url: null }))).toBeNull();
   });
 });

@@ -5,13 +5,30 @@
       <div class="job">
         <app-company-avatar [company]="title(row)" />
         <div>
-          <div class="company">{{ title(row) }}</div>
+          <div class="company">
+            {{ title(row) }}
+            @if (link(row); as url) {
+              <a
+                class="job-link"
+                [href]="url"
+                target="_blank"
+                rel="noopener noreferrer"
+                [attr.aria-label]="'פתח את המשרה של ' + title(row) + ' בלשונית חדשה'"
+                title="פתח את המשרה"
+                (click)="$event.stopPropagation()"
+                (keydown.enter)="$event.stopPropagation()"
+                ><mat-icon aria-hidden="true">open_in_new</mat-icon></a
+              >
+            }
+          </div>
           <div class="secondary">
             {{ subtitle(row) }} · {{ row.appliedAt | date: 'dd/MM/yyyy' }}
           </div>
-          <!-- בטלפון עמודת המגייס מוסתרת, והשם מופיע כאן -->
+          <!-- בטלפון עמודת המגייס מוסתרת, והשם (או המקור) מופיע כאן -->
           @if (recruiterFor(row); as recruiter) {
             <div class="secondary mobile-recruiter">דרך {{ recruiter.name }}</div>
+          } @else if (row.source) {
+            <div class="secondary mobile-recruiter">מקור: {{ row.source }}</div>
           }
         </div>
       </div>
@@ -49,7 +66,7 @@
   </ng-container>
 
   <ng-container matColumnDef="recruiter">
-    <th mat-header-cell *matHeaderCellDef>מגייס</th>
+    <th mat-header-cell *matHeaderCellDef>מגייס / מקור</th>
     <td mat-cell *matCellDef="let row">
       @if (recruiterFor(row); as recruiter) {
         <a
@@ -59,6 +76,9 @@
           (keydown.enter)="$event.stopPropagation()"
           >{{ recruiter.name }}</a
         >
+      } @else if (row.source) {
+        <!-- בלי מגייס, המקור עונה על אותה שאלה: מאיפה הגיעה המשרה -->
+        <span class="source">{{ row.source }}</span>
       } @else {
         <span class="secondary">-</span>
       }

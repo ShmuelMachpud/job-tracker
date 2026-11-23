@@ -24,3 +24,12 @@ export function jobTitle(application: JobApplication, recruiterName: string | nu
 export function jobSubtitle(application: JobApplication): string {
   return isNotSpecified(application.company) ? 'חברה לא ידועה' : application.role;
 }
+
+/**
+ * הקישור למשרה, רק כשהוא כתובת אינטרנט (http או https).
+ * השדה נשמר כטקסט חופשי, ולכן ערך אחר (למשל "javascript:") לא מוצג כקישור.
+ */
+export function jobLink(application: JobApplication): string | null {
+  const url = application.url?.trim();
+  return url && /^https?:\/\/\S+$/i.test(url) ? url : null;
+}

@@ -11,7 +11,7 @@ import {
   ApplicationStatus,
 } from '../../models/application-status';
 import { JobApplication } from '../../models/job-application';
-import { jobSubtitle, jobTitle } from '../../logic/job-labels';
+import { jobLink, jobSubtitle, jobTitle } from '../../logic/job-labels';
 import { CompanyAvatar } from '../company-avatar/company-avatar';
 import { StatusBadge } from '../status-badge/status-badge';
 import { Recruiter } from '../../../recruiters/models/recruiter';
@@ -59,6 +59,7 @@ export class ApplicationsTable {
   }
 
   protected readonly subtitle = jobSubtitle;
+  protected readonly link = jobLink;
 
   protected recruiterFor(application: JobApplication): Recruiter | null {
     return application.recruiterId
