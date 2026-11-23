@@ -58,6 +58,19 @@
   }
 }
 
+.name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.kind {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 16px;
+  inline-size: 16px;
+  block-size: 16px;
+}
+
 .company {
   font-weight: 500;
 }

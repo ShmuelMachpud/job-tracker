@@ -1,0 +1,88 @@
+<form [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <div class="toggles">
+    <mat-button-toggle-group
+      formControlName="direction"
+      aria-label="מי פנה"
+      hideSingleSelectionIndicator
+    >
+      @for (direction of directions; track direction) {
+        <mat-button-toggle [value]="direction">{{ directionLabels[direction] }}</mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+
+    <mat-button-toggle-group
+      class="channels"
+      formControlName="channel"
+      aria-label="ערוץ"
+      hideSingleSelectionIndicator
+    >
+      @for (channel of channels; track channel) {
+        <mat-button-toggle [value]="channel" [attr.aria-label]="channelLabels[channel]">
+          <mat-icon [attr.title]="channelLabels[channel]">{{ channelIcons[channel] }}</mat-icon>
+        </mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+  </div>
+
+  <div class="fields">
+    <mat-form-field appearance="outline">
+      <mat-label>תאריך</mat-label>
+      <input matInput type="date" formControlName="date" required />
+      <mat-error>חובה לבחור תאריך</mat-error>
+    </mat-form-field>
+
+    @if (jobs().length > 0) {
+      <mat-form-field appearance="outline">
+        <mat-label>על איזו משרה</mat-label>
+        <mat-select formControlName="applicationId">
+          <mat-option value="">כללי, לא משרה מסוימת</mat-option>
+          @for (job of jobs(); track job.id) {
+            <mat-option [value]="job.id">{{ job.company }} · {{ job.role }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>מה היה</mat-label>
+      <textarea
+        matInput
+        formControlName="summary"
+        rows="2"
+        required
+        placeholder="למשל: סיפרה על משרת Backend חדשה, שולחת לי פרטים"
+      ></textarea>
+      <mat-error>חובה לכתוב מה היה</mat-error>
+    </mat-form-field>
+  </div>
+
+  @if (!existing()) {
+    <mat-checkbox formControlName="updateNextAction">לעדכן גם את הפעולה הבאה</mat-checkbox>
+
+    @if (form.controls.updateNextAction.value) {
+      <div class="fields next-action">
+        <mat-form-field appearance="outline">
+          <mat-label>פעולה הבאה</mat-label>
+          <input matInput formControlName="nextAction" placeholder="ריק = אין פעולה הבאה" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>תאריך לפעולה הבאה</mat-label>
+          <input matInput type="date" formControlName="nextActionAt" />
+        </mat-form-field>
+      </div>
+    }
+  }
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  <div class="actions">
+    @if (existing()) {
+      <button matButton type="button" (click)="cancelled.emit()">ביטול</button>
+    }
+    <button matButton="filled" type="submit" [disabled]="busy()">
+      {{ busy() ? 'שומר...' : existing() ? 'שמירה' : 'הוסף ליומן' }}
+    </button>
+  </div>
+</form>

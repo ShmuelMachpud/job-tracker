@@ -25,7 +25,11 @@ import {
   RecruiterFormDialogData,
   RecruiterFormDialogResult,
 } from '../components/recruiter-form-dialog/recruiter-form-dialog';
+import { InteractionForm } from '../components/interaction-form/interaction-form';
+import { InteractionTimeline } from '../components/interaction-timeline/interaction-timeline';
+import { interactionsFor } from '../logic/interactions';
 import { RECRUITER_KIND_LABELS, Recruiter } from '../models/recruiter';
+import { InteractionsStore } from '../state/interactions-store';
 import { RecruitersStore } from '../state/recruiters-store';
 
 @Component({
@@ -34,6 +38,8 @@ import { RecruitersStore } from '../state/recruiters-store';
     ApplicationsTable,
     CompanyAvatar,
     DatePipe,
+    InteractionForm,
+    InteractionTimeline,
     MatButtonModule,
     MatIconModule,
     MatProgressBarModule,
@@ -49,6 +55,7 @@ export class RecruiterDetailsPage implements OnInit {
 
   protected readonly store = inject(RecruitersStore);
   protected readonly applications = inject(ApplicationsStore);
+  protected readonly interactions = inject(InteractionsStore);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
@@ -61,9 +68,14 @@ export class RecruiterDetailsPage implements OnInit {
     this.applications.applications().filter((job) => job.recruiterId === this.id()),
   );
 
+  protected readonly log = computed(() =>
+    interactionsFor(this.interactions.interactions(), { recruiterId: this.id() }),
+  );
+
   ngOnInit(): void {
     this.store.ensureLoaded();
     this.applications.ensureLoaded();
+    this.interactions.ensureLoaded();
   }
 
   protected edit(recruiter: Recruiter): void {

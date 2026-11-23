@@ -1,0 +1,48 @@
+<ol class="timeline">
+  @for (item of interactions(); track item.id) {
+    <li>
+      <span class="icon" [attr.data-direction]="item.direction" aria-hidden="true">
+        <mat-icon>{{ channelIcons[item.channel] }}</mat-icon>
+      </span>
+
+      <div class="body">
+        @if (editingId() === item.id && recruiter(); as recruiter) {
+          <app-interaction-form
+            [recruiter]="recruiter"
+            [jobs]="jobs()"
+            [existing]="item"
+            (saved)="editingId.set(null)"
+            (cancelled)="editingId.set(null)"
+          />
+        } @else {
+          <div class="meta">
+            <span>{{ item.date | date: 'dd/MM/yyyy' }}</span>
+            <span>·</span>
+            <span>{{ channelLabels[item.channel] }}</span>
+            <span>·</span>
+            <span>{{ directionLabels[item.direction] }}</span>
+            @if (jobLabel(item); as job) {
+              <span class="job">{{ job }}</span>
+            }
+          </div>
+          <p class="summary">{{ item.summary }}</p>
+
+          @if (recruiter()) {
+            <div class="item-actions">
+              <button matButton type="button" (click)="edit(item)">עריכה</button>
+              <button
+                matButton
+                type="button"
+                class="delete"
+                [class.confirming]="confirmingDeleteId() === item.id"
+                (click)="delete(item)"
+              >
+                {{ confirmingDeleteId() === item.id ? 'בטוח? לחץ שוב' : 'מחיקה' }}
+              </button>
+            </div>
+          }
+        }
+      </div>
+    </li>
+  }
+</ol>

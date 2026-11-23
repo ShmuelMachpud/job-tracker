@@ -16,6 +16,8 @@ public class AppDbContext : DbContext, IDataProtectionKeyContext
 
     public DbSet<Recruiter> Recruiters => Set<Recruiter>();
 
+    public DbSet<Interaction> Interactions => Set<Interaction>();
+
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>

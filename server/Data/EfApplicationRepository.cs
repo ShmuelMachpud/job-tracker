@@ -18,6 +18,8 @@ public class EfApplicationRepository : IApplicationRepository
     public Task<JobApplication?> GetByIdAsync(Guid id) =>
         _db.Applications.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
 
+    public Task<bool> ExistsAsync(Guid id) => _db.Applications.AnyAsync(a => a.Id == id);
+
     public async Task AddAsync(JobApplication application)
     {
         _db.Applications.Add(application);

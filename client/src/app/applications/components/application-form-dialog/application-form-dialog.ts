@@ -15,7 +15,10 @@ import { ApplicationsStore } from '../../state/applications-store';
 import { JobLinkImport } from '../job-link-import/job-link-import';
 import { StatusBadge } from '../status-badge/status-badge';
 import { StatusHistory } from '../status-history/status-history';
+import { InteractionTimeline } from '../../../recruiters/components/interaction-timeline/interaction-timeline';
 import { RecruiterPicker } from '../../../recruiters/components/recruiter-picker/recruiter-picker';
+import { interactionsFor } from '../../../recruiters/logic/interactions';
+import { InteractionsStore } from '../../../recruiters/state/interactions-store';
 
 /** מה פותחים: null למשרה חדשה, או משרה קיימת לעריכה. */
 export interface ApplicationFormDialogData {
@@ -32,6 +35,7 @@ type BusyState = 'idle' | 'saving' | 'deleting';
 
 @Component({
   imports: [
+    InteractionTimeline,
     JobLinkImport,
     MatButtonModule,
     MatDialogModule,
@@ -54,6 +58,15 @@ export class ApplicationFormDialog {
 
   /** המשרה שנערכת, או null כשמוסיפים משרה חדשה. */
   protected readonly existing = inject<ApplicationFormDialogData>(MAT_DIALOG_DATA).application;
+
+  private readonly interactions = inject(InteractionsStore);
+
+  /** רשומות היומן שקושרו למשרה הזו, לקריאה בלבד. עורכים אותן בדף המגייס. */
+  protected readonly log = computed(() =>
+    this.existing
+      ? interactionsFor(this.interactions.interactions(), { applicationId: this.existing.id })
+      : [],
+  );
 
   protected readonly form = createApplicationForm(inject(NonNullableFormBuilder));
 
@@ -88,6 +101,7 @@ export class ApplicationFormDialog {
   });
 
   constructor() {
+    this.interactions.ensureLoaded();
     if (this.existing) {
       this.form.setValue(toFormValue(this.existing));
     }
