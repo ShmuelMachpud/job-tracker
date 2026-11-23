@@ -20,10 +20,7 @@
           <app-company-avatar [company]="recruiter.name" />
           <div class="title">
             <h1>{{ recruiter.name }}</h1>
-            <p class="subtitle">
-              {{ kindLabels[recruiter.kind]
-              }}{{ recruiter.company ? ' · ' + recruiter.company : '' }}
-            </p>
+            <p class="subtitle">{{ subtitle(recruiter) }}</p>
           </div>
           <button matButton="outlined" type="button" (click)="edit(recruiter)">
             <mat-icon>edit</mat-icon>

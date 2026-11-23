@@ -2,6 +2,7 @@ import { Component, input, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 import { FollowUpEntry, followUpKey } from '../../logic/follow-up-entries';
+import { jobTitle } from '../../logic/job-labels';
 import { JobApplication } from '../../models/job-application';
 import { Recruiter } from '../../../recruiters/models/recruiter';
 
@@ -13,6 +14,8 @@ import { Recruiter } from '../../../recruiters/models/recruiter';
 })
 export class FollowUpList {
   readonly items = input.required<FollowUpEntry[]>();
+  /** כדי לזהות משרה בלי שם חברה לפי המגייס שדרכו הוגשה. */
+  readonly recruiters = input<ReadonlyMap<string, Recruiter>>(new Map());
   readonly selected = output<JobApplication>();
   readonly recruiterSelected = output<Recruiter>();
 
@@ -27,9 +30,14 @@ export class FollowUpList {
   }
 
   protected title(entry: FollowUpEntry): string {
-    return entry.kind === 'application'
-      ? entry.followUp.application.company
-      : entry.followUp.recruiter.name;
+    if (entry.kind === 'recruiter') {
+      return entry.followUp.recruiter.name;
+    }
+    const application = entry.followUp.application;
+    const recruiter = application.recruiterId
+      ? this.recruiters().get(application.recruiterId)
+      : undefined;
+    return jobTitle(application, recruiter?.name ?? null);
   }
 
   protected describe(entry: FollowUpEntry): string {
