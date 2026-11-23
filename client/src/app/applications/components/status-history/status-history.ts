@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 
-import { StatusChange } from '../../models/job-application';
+import { IsoDateTime, StatusChange } from '../../models/job-application';
 import { StatusBadge } from '../status-badge/status-badge';
 
 /** רשימת שינויי הסטטוס של משרה, האחרון למעלה. */
@@ -13,6 +13,21 @@ import { StatusBadge } from '../status-badge/status-badge';
 })
 export class StatusHistory {
   readonly history = input.required<StatusChange[]>();
+  /** מתי המשרה נוספה למערכת. */
+  readonly createdAt = input<IsoDateTime | null>(null);
 
-  protected readonly entries = computed(() => [...this.history()].reverse());
+  protected readonly entries = computed(() =>
+    [...this.history()].reverse().map((change) => ({
+      ...change,
+      dateOnly: isBeforeCreation(change, this.createdAt()),
+    })),
+  );
+}
+
+/**
+ * רשומה מלפני שהמשרה נוספה למערכת היא תאריך ההגשה של משרה שנוספה באיחור.
+ * השעה שלה לא ידועה, ולכן מציגים רק את התאריך.
+ */
+export function isBeforeCreation(change: StatusChange, createdAt: IsoDateTime | null): boolean {
+  return createdAt !== null && Date.parse(change.at) < Date.parse(createdAt);
 }

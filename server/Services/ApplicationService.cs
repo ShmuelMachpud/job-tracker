@@ -42,13 +42,14 @@ public class ApplicationService : IApplicationService
         var now = _time.GetUtcNow();
         // בלי סטטוס בבקשה, משרה חדשה מתחילה כ"הוגש", כמו קודם
         var status = request.Status ?? ApplicationStatus.Applied;
+        var appliedAt = details.AppliedAt ?? DateOnly.FromDateTime(_time.GetLocalNow().DateTime);
 
         var application = new JobApplication
         {
             Id = Guid.NewGuid(),
             Company = details.Company!.Trim(),
             Role = details.Role!.Trim(),
-            AppliedAt = details.AppliedAt ?? DateOnly.FromDateTime(_time.GetLocalNow().DateTime),
+            AppliedAt = appliedAt,
             Source = Clean(details.Source),
             Url = Clean(details.Url),
             Contact = Clean(details.Contact),
@@ -58,7 +59,7 @@ public class ApplicationService : IApplicationService
             NextActionAt = details.NextActionAt,
             Notes = Clean(details.Notes),
             Status = status,
-            History = [new StatusChange(status, now)],
+            History = [new StatusChange(status, FirstEntryAt(appliedAt, now))],
             CreatedAt = now,
             UpdatedAt = now,
         };
@@ -80,11 +81,16 @@ public class ApplicationService : IApplicationService
         if (existing is null)
             return Result<JobApplication>.NotFound();
 
+        var appliedAt = request.AppliedAt ?? existing.AppliedAt;
         var updated = existing with
         {
             Company = request.Company!.Trim(),
             Role = request.Role!.Trim(),
-            AppliedAt = request.AppliedAt ?? existing.AppliedAt,
+            AppliedAt = appliedAt,
+            History = WithFirstEntryAt(
+                existing.History,
+                FirstEntryAt(appliedAt, existing.CreatedAt)
+            ),
             Source = Clean(request.Source),
             Url = Clean(request.Url),
             Contact = Clean(request.Contact),
@@ -131,6 +137,26 @@ public class ApplicationService : IApplicationService
     }
 
     public Task<bool> DeleteAsync(Guid id) => _repository.DeleteAsync(id);
+
+    /// <summary>
+    /// מתי לרשום את הסטטוס הראשון בהיסטוריה.
+    /// משרה שנוספה באיחור (למשל בייבוא) הוגשה לפני שנוספה למערכת, ולכן הרשומה הראשונה מקבלת את תאריך ההגשה.
+    /// השעה לא ידועה, ולכן נרשמת חצות (UTC). האתר מזהה רשומה כזו לפי זה שהיא מוקדמת מיצירת המשרה, ומציג רק תאריך.
+    /// </summary>
+    private DateTimeOffset FirstEntryAt(DateOnly appliedAt, DateTimeOffset createdAt)
+    {
+        var createdOn = DateOnly.FromDateTime(
+            TimeZoneInfo.ConvertTime(createdAt, _time.LocalTimeZone).DateTime
+        );
+        return appliedAt < createdOn
+            ? new DateTimeOffset(appliedAt.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero)
+            : createdAt;
+    }
+
+    private static IReadOnlyList<StatusChange> WithFirstEntryAt(
+        IReadOnlyList<StatusChange> history,
+        DateTimeOffset at
+    ) => history.Count == 0 ? history : [history[0] with { At = at }, .. history.Skip(1)];
 
     private async Task<Result<JobApplication>> SaveAsync(JobApplication application)
     {
