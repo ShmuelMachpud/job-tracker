@@ -1,6 +1,6 @@
 import { NonNullableFormBuilder, ValidatorFn } from '@angular/forms';
 
-import { todayIsoDate } from '../logic/iso-date';
+import { nowTimeOfDay, todayIsoDate } from '../logic/iso-date';
 import { ApplicationDetailsRequest } from '../models/application-details-request';
 import { JobApplication } from '../models/job-application';
 import { JobDetailsSuggestion } from '../models/job-details-suggestion';
@@ -14,7 +14,8 @@ export function createApplicationForm(fb: NonNullableFormBuilder) {
     company: ['', notBlank],
     role: ['', notBlank],
     appliedAt: [todayIsoDate()],
-    appliedTime: [''],
+    // בדרך כלל מוסיפים משרה מיד אחרי השליחה, ולכן ברירת המחדל היא עכשיו. בעריכה הטופס מתמלא מהמשרה
+    appliedTime: [nowTimeOfDay()],
     source: [''],
     url: [''],
     contact: [''],
@@ -54,6 +55,7 @@ const SUGGESTION_FIELDS = [
   ['role', 'תפקיד'],
   ['source', 'מקור'],
   ['salary', 'שכר'],
+  ['notes', 'הערות'],
   ['url', 'קישור'],
 ] as const;
 

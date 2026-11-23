@@ -8,6 +8,15 @@ public record ExtractedFields(string? Company, string? Role, string? Salary, str
 {
     public static readonly ExtractedFields Empty = new(null, null, null, null);
 
+    /// <summary>עיר או אזור, למשל "ירושלים" או "מרחוק".</summary>
+    public string? Location { get; init; }
+
+    /// <summary>למשל "משרה מלאה".</summary>
+    public string? EmploymentType { get; init; }
+
+    /// <summary>מתי המודעה פורסמה. זה לא תאריך ההגשה.</summary>
+    public DateOnly? DatePosted { get; init; }
+
     /// <summary>משלים שדות חסרים משכבה אחרת. מה שכבר נמצא לא נדרס.</summary>
     public ExtractedFields OrElse(ExtractedFields fallback) =>
         new(
@@ -15,5 +24,10 @@ public record ExtractedFields(string? Company, string? Role, string? Salary, str
             Role ?? fallback.Role,
             Salary ?? fallback.Salary,
             SiteName ?? fallback.SiteName
-        );
+        )
+        {
+            Location = Location ?? fallback.Location,
+            EmploymentType = EmploymentType ?? fallback.EmploymentType,
+            DatePosted = DatePosted ?? fallback.DatePosted,
+        };
 }

@@ -74,7 +74,79 @@ public class JsonLdJobPostingExtractor : IJobPageExtractor
             Role: Text(posting["title"]),
             Salary: FormatSalary(posting["baseSalary"]),
             SiteName: null
-        );
+        )
+        {
+            Location = FormatLocation(posting),
+            EmploymentType = FormatEmploymentType(posting["employmentType"]),
+            DatePosted = ParseDate(Text(posting["datePosted"])),
+        };
+
+    /// <summary>
+    /// הערים מ־jobLocation, למשל "ירושלים" או "תל אביב, חיפה". משרה מהבית מסומנת ב־jobLocationType.
+    /// jobLocation ו־address יכולים להיות אובייקט, מערך או טקסט.
+    /// </summary>
+    private static string? FormatLocation(JsonObject posting)
+    {
+        var places = Items(posting["jobLocation"])
+            .SelectMany(place => place is JsonObject obj ? Items(obj["address"]) : [place])
+            .Select(address =>
+                address is JsonObject obj
+                    ? Text(obj["addressLocality"]) ?? Text(obj["addressRegion"])
+                    : Text(address)
+            )
+            .OfType<string>()
+            .ToList();
+
+        if (Items(posting["jobLocationType"]).Any(type => Text(type) == "TELECOMMUTE"))
+            places.Add("מרחוק");
+
+        var distinct = places.Distinct().ToList();
+        return distinct.Count == 0 ? null : string.Join(", ", distinct);
+    }
+
+    private static string? FormatEmploymentType(JsonNode? employmentType)
+    {
+        var labels = Items(employmentType)
+            .Select(type => EmploymentTypeLabel(Text(type)))
+            .OfType<string>()
+            .Distinct()
+            .ToList();
+
+        return labels.Count == 0 ? null : string.Join(", ", labels);
+    }
+
+    private static string? EmploymentTypeLabel(string? type) =>
+        type?.ToUpperInvariant().Replace('-', '_') switch
+        {
+            "FULL_TIME" => "משרה מלאה",
+            "PART_TIME" => "משרה חלקית",
+            "CONTRACTOR" => "פרילנס",
+            "TEMPORARY" => "זמנית",
+            "INTERN" => "התמחות",
+            _ => null,
+        };
+
+    /// <summary>"2026-11-19" או "2026-11-19T15:43": רק התאריך.</summary>
+    private static DateOnly? ParseDate(string? value) =>
+        value is { Length: >= 10 }
+        && DateOnly.TryParseExact(
+            value[..10],
+            "yyyy-MM-dd",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out var date
+        )
+            ? date
+            : null;
+
+    /// <summary>ערך בודד או מערך, כרשימה.</summary>
+    private static IEnumerable<JsonNode> Items(JsonNode? node) =>
+        node switch
+        {
+            null => [],
+            JsonArray array => array.OfType<JsonNode>(),
+            _ => [node],
+        };
 
     /// <summary>למשל "20,000-25,000 ILS לחודש".</summary>
     private static string? FormatSalary(JsonNode? baseSalary)
@@ -118,7 +190,12 @@ public class JsonLdJobPostingExtractor : IJobPageExtractor
         if (value.TryGetValue<decimal>(out var number))
             return number.ToString("N0", CultureInfo.InvariantCulture);
 
-        return decimal.TryParse(Text(value), NumberStyles.Any, CultureInfo.InvariantCulture, out number)
+        return decimal.TryParse(
+            Text(value),
+            NumberStyles.Any,
+            CultureInfo.InvariantCulture,
+            out number
+        )
             ? number.ToString("N0", CultureInfo.InvariantCulture)
             : null;
     }
@@ -133,5 +210,7 @@ public class JsonLdJobPostingExtractor : IJobPageExtractor
         };
 
     private static string? Text(JsonNode? node) =>
-        node is JsonValue value && value.TryGetValue<string>(out var text) ? TextCleaner.Clean(text) : null;
+        node is JsonValue value && value.TryGetValue<string>(out var text)
+            ? TextCleaner.Clean(text)
+            : null;
 }

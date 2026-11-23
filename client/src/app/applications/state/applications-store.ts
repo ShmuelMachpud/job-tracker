@@ -5,6 +5,7 @@ import { Observable, tap } from 'rxjs';
 import { ApplicationsApi } from '../data/applications-api';
 import { computeMetrics } from '../logic/application-metrics';
 import { getFollowUps } from '../logic/follow-ups';
+import { sortApplications } from '../logic/sort-applications';
 import { todayIsoDate } from '../logic/iso-date';
 import { ApplicationDetailsRequest } from '../models/application-details-request';
 import { ApplicationStatus } from '../models/application-status';
@@ -23,10 +24,8 @@ export class ApplicationsStore {
 
   readonly loadState = this.state.asReadonly();
 
-  /** כל ההגשות, החדשה ביותר למעלה. */
-  readonly applications = computed(() =>
-    [...this.items()].sort((a, b) => b.appliedAt.localeCompare(a.appliedAt)),
-  );
+  /** כל ההגשות, החדשה ביותר למעלה (לפי תאריך ושעת הגשה). */
+  readonly applications = computed(() => sortApplications(this.items()));
 
   /** המדדים מחושבים על כל המשרות, בלי קשר לסינון במסך. */
   readonly metrics = computed(() => computeMetrics(this.items()));

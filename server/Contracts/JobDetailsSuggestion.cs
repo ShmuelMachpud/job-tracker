@@ -9,5 +9,6 @@ public record JobDetailsSuggestion(
     string? Role,
     string? Source,
     string? Salary,
+    string? Notes,
     string Url
 );
