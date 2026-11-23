@@ -1,8 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 
 import {
   APPLICATION_STATUS_LABELS,
@@ -12,6 +13,7 @@ import {
 import { JobApplication } from '../../models/job-application';
 import { CompanyAvatar } from '../company-avatar/company-avatar';
 import { StatusBadge } from '../status-badge/status-badge';
+import { Recruiter } from '../../../recruiters/models/recruiter';
 
 export interface StatusChangeEvent {
   id: string;
@@ -19,7 +21,15 @@ export interface StatusChangeEvent {
 }
 
 @Component({
-  imports: [CompanyAvatar, DatePipe, MatIconModule, MatMenuModule, MatTableModule, StatusBadge],
+  imports: [
+    CompanyAvatar,
+    DatePipe,
+    MatIconModule,
+    MatMenuModule,
+    MatTableModule,
+    RouterLink,
+    StatusBadge,
+  ],
   selector: 'app-applications-table',
   styleUrl: './applications-table.scss',
   templateUrl: './applications-table.html',
@@ -29,8 +39,24 @@ export class ApplicationsTable {
   readonly statusChange = output<StatusChangeEvent>();
   readonly rowSelected = output<JobApplication>();
 
-  protected readonly columns = ['job', 'status', 'nextAction'];
+  /**
+   * המגייסים, כדי להציג את שם המגייס בכל שורה.
+   * בלי מגייסים (למשל במסך של מגייס אחד, שבו כולן שלו) אין עמודת מגייס.
+   */
+  readonly recruiters = input<ReadonlyMap<string, Recruiter> | null>(null);
+
+  protected readonly columns = computed(() =>
+    this.recruiters()
+      ? ['job', 'status', 'recruiter', 'nextAction']
+      : ['job', 'status', 'nextAction'],
+  );
   protected readonly statuses = APPLICATION_STATUSES;
+
+  protected recruiterFor(application: JobApplication): Recruiter | null {
+    return application.recruiterId
+      ? (this.recruiters()?.get(application.recruiterId) ?? null)
+      : null;
+  }
 
   protected rowLabel(application: JobApplication): string {
     return `${application.company}, ${application.role}. לחץ לעריכה`;

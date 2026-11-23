@@ -17,6 +17,7 @@ export function createApplicationForm(fb: NonNullableFormBuilder) {
     source: [''],
     url: [''],
     contact: [''],
+    recruiterId: [''],
     salary: [''],
     nextAction: [''],
     nextActionAt: [''],
@@ -36,6 +37,7 @@ export function toFormValue(application: JobApplication): ApplicationFormValue {
     source: application.source ?? '',
     url: application.url ?? '',
     contact: application.contact ?? '',
+    recruiterId: application.recruiterId ?? '',
     salary: application.salary ?? '',
     nextAction: application.nextAction ?? '',
     nextActionAt: application.nextActionAt ?? '',
@@ -83,6 +85,7 @@ export function toDetailsRequest(value: ApplicationFormValue): ApplicationDetail
     nextAction: emptyToNull(value.nextAction),
     nextActionAt: emptyToNull(value.nextActionAt),
     notes: emptyToNull(value.notes),
+    recruiterId: emptyToNull(value.recruiterId),
   };
 }
 

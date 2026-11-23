@@ -74,6 +74,9 @@ namespace Server.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("RecruiterId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -98,7 +101,68 @@ namespace Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RecruiterId");
+
                     b.ToTable("Applications", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.Recruiter", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Company")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateOnly?>("LastContactAt")
+                        .HasColumnType("date");
+
+                    b.Property<string>("LinkedIn")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("NextAction")
+                        .HasColumnType("text");
+
+                    b.Property<DateOnly?>("NextActionAt")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Recruiters", (string)null);
+                });
+
+            modelBuilder.Entity("Server.Models.JobApplication", b =>
+                {
+                    b.HasOne("Server.Models.Recruiter", null)
+                        .WithMany()
+                        .HasForeignKey("RecruiterId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 #pragma warning restore 612, 618
         }

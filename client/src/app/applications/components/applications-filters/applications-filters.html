@@ -25,6 +25,22 @@
     </mat-select>
   </mat-form-field>
 
+  @if (recruiters().length > 0) {
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="recruiter-field">
+      <mat-select
+        [value]="filter().recruiterId"
+        placeholder="כל המגייסים"
+        (selectionChange)="onRecruiterChange($event.value)"
+        aria-label="סינון לפי מגייס"
+      >
+        <mat-option [value]="null">כל המגייסים</mat-option>
+        @for (recruiter of recruiters(); track recruiter.id) {
+          <mat-option [value]="recruiter.id">{{ recruiter.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+
   @if (isActive()) {
     <button matButton type="button" (click)="clear()">נקה</button>
   }

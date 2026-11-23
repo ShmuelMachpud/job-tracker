@@ -1,0 +1,65 @@
+table {
+  width: 100%;
+  background: transparent;
+}
+
+tr.mat-mdc-header-row {
+  height: 36px;
+}
+
+th.mat-mdc-header-cell {
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-label-medium);
+}
+
+tr.mat-mdc-row:last-child td.mat-mdc-cell {
+  border-block-end: 0;
+}
+
+tr.clickable {
+  cursor: pointer;
+
+  &:hover {
+    background: var(--app-page-background);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--app-brand);
+    outline-offset: -2px;
+  }
+}
+
+td.mat-mdc-cell {
+  padding-block: 10px;
+}
+
+.recruiter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.name {
+  font-weight: 500;
+}
+
+.mat-column-jobs,
+.mat-column-lastContact {
+  inline-size: 110px;
+}
+
+.mat-column-nextAction {
+  inline-size: 30%;
+}
+
+.secondary {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.8125rem;
+}
+
+// בטלפון מסתירים את "קשר אחרון", כדי שהטבלה לא תצא מהמסך
+@media (max-width: 600px) {
+  .mat-column-lastContact {
+    display: none;
+  }
+}

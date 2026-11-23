@@ -1,0 +1,85 @@
+<app-shell>
+  <button shellActions matButton="filled" type="button" (click)="add()">
+    <mat-icon>person_add</mat-icon>
+    הוסף מגייס
+  </button>
+
+  <header class="page-header">
+    <h1>מגייסים</h1>
+    @if (store.loadState() === 'loaded') {
+      <p class="summary">{{ summary() }}</p>
+    }
+  </header>
+
+  @switch (store.loadState()) {
+    @case ('loading') {
+      <mat-progress-bar mode="indeterminate" />
+    }
+    @case ('error') {
+      <div class="surface-card message">
+        <p>לא הצלחנו לטעון את המגייסים. ודא שהשרת רץ.</p>
+        <button matButton="outlined" (click)="store.load()">נסה שוב</button>
+      </div>
+    }
+    @default {
+      <section class="surface-card list" aria-label="רשימת המגייסים">
+        @if (store.recruiters().length === 0) {
+          <p class="message">עדיין אין מגייסים. לחץ על "הוסף מגייס" כדי להוסיף את הראשון.</p>
+        } @else {
+          <div class="toolbar">
+            <div class="filters">
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
+                <mat-icon matPrefix>search</mat-icon>
+                <input
+                  matInput
+                  type="search"
+                  placeholder="חיפוש שם, חברה או מייל"
+                  aria-label="חיפוש"
+                  [value]="filter().query"
+                  (input)="onQueryInput($event)"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="kind-field">
+                <mat-select
+                  [value]="filter().kind"
+                  placeholder="כל הסוגים"
+                  aria-label="סינון לפי סוג"
+                  (selectionChange)="onKindChange($event.value)"
+                >
+                  <mat-option [value]="null">כל הסוגים</mat-option>
+                  @for (kind of kinds; track kind) {
+                    <mat-option [value]="kind">{{ kindLabels[kind] }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              @if (filterActive()) {
+                <button matButton type="button" (click)="clearFilter()">נקה</button>
+              }
+            </div>
+
+            @if (filterActive()) {
+              <p class="count">
+                מוצגים {{ visibleRecruiters().length }} מתוך {{ store.recruiters().length }}
+              </p>
+            }
+          </div>
+
+          @if (visibleRecruiters().length === 0) {
+            <div class="message">
+              <p>לא נמצאו מגייסים שמתאימים לסינון.</p>
+              <button matButton="outlined" (click)="clearFilter()">נקה סינון</button>
+            </div>
+          } @else {
+            <app-recruiters-table
+              [recruiters]="visibleRecruiters()"
+              [jobCounts]="jobCounts()"
+              (rowSelected)="openDetails($event)"
+            />
+          }
+        }
+      </section>
+    }
+  }
+</app-shell>

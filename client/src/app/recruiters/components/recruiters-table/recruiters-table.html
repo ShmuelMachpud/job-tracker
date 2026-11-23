@@ -1,0 +1,65 @@
+<table mat-table [dataSource]="recruiters()">
+  <ng-container matColumnDef="recruiter">
+    <th mat-header-cell *matHeaderCellDef>מגייס</th>
+    <td mat-cell *matCellDef="let row">
+      <div class="recruiter">
+        <app-company-avatar [company]="row.name" />
+        <div>
+          <div class="name">{{ row.name }}</div>
+          <div class="secondary">
+            {{ subtitle(row) }}
+          </div>
+        </div>
+      </div>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="jobs">
+    <th mat-header-cell *matHeaderCellDef>משרות</th>
+    <td mat-cell *matCellDef="let row">
+      @let count = jobs(row);
+      @if (count.total > 0) {
+        <div>{{ count.total }}</div>
+        <div class="secondary">{{ activeLabel(count.active) }}</div>
+      } @else {
+        <span class="secondary">-</span>
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="lastContact">
+    <th mat-header-cell *matHeaderCellDef>קשר אחרון</th>
+    <td mat-cell *matCellDef="let row">
+      @if (row.lastContactAt) {
+        {{ row.lastContactAt | date: 'dd/MM/yyyy' }}
+      } @else {
+        <span class="secondary">-</span>
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="nextAction">
+    <th mat-header-cell *matHeaderCellDef>פעולה הבאה</th>
+    <td mat-cell *matCellDef="let row">
+      @if (row.nextAction) {
+        <div>{{ row.nextAction }}</div>
+        @if (row.nextActionAt) {
+          <div class="secondary">{{ row.nextActionAt | date: 'dd/MM/yyyy' }}</div>
+        }
+      } @else {
+        <span class="secondary">-</span>
+      }
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: columns"
+    class="clickable"
+    tabindex="0"
+    [attr.aria-label]="rowLabel(row)"
+    (click)="rowSelected.emit(row)"
+    (keydown.enter)="rowSelected.emit(row)"
+  ></tr>
+</table>

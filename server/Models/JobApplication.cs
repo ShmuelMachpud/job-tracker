@@ -10,6 +10,9 @@ public record JobApplication
     public string? Source { get; init; }
     public string? Url { get; init; }
     public string? Contact { get; init; }
+
+    /// <summary>המגייס שדרכו המשרה מתנהלת, אם יש כזה.</summary>
+    public Guid? RecruiterId { get; init; }
     public string? Salary { get; init; }
     public string? NextAction { get; init; }
     public DateOnly? NextActionAt { get; init; }

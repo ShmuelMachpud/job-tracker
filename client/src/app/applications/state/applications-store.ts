@@ -44,6 +44,22 @@ export class ApplicationsStore {
     });
   }
 
+  /** טוען רק אם עוד לא נטען, כדי שמעבר בין מסכים לא יטען הכול מחדש. */
+  ensureLoaded(): void {
+    if (this.state() === 'idle' || this.state() === 'error') {
+      this.load();
+    }
+  }
+
+  /** מגייס נמחק: השרת כבר ניתק ממנו את המשרות, וכאן מעדכנים את העותק שבזיכרון. */
+  detachRecruiter(recruiterId: string): void {
+    this.items.update((list) =>
+      list.map((item) =>
+        item.recruiterId === recruiterId ? { ...item, recruiterId: null } : item,
+      ),
+    );
+  }
+
   /** מחזיר Observable כי מי שקרא צריך לדעת אם השמירה הצליחה (למשל כדי לסגור חלון). */
   create(request: CreateApplicationRequest): Observable<JobApplication> {
     return this.api

@@ -34,7 +34,10 @@
             <p class="message">עדיין אין משרות. לחץ על "הוסף משרה" כדי להוסיף את הראשונה.</p>
           } @else {
             <div class="toolbar">
-              <app-applications-filters [(filter)]="filter" />
+              <app-applications-filters
+                [(filter)]="filter"
+                [recruiters]="recruiters.recruiters()"
+              />
               @if (filterActive()) {
                 <p class="count">
                   מוצגות {{ visibleApplications().length }} מתוך {{ store.applications().length }}
@@ -50,6 +53,7 @@
             } @else {
               <app-applications-table
                 [applications]="visibleApplications()"
+                [recruiters]="recruiters.byId()"
                 (statusChange)="onStatusChange($event)"
                 (rowSelected)="openDialog($event)"
               />

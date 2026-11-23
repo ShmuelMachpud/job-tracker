@@ -47,6 +47,19 @@ td.mat-mdc-cell {
   inline-size: 30%;
 }
 
+.mat-column-recruiter {
+  inline-size: 160px;
+}
+
+.recruiter-link {
+  color: var(--app-brand);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .company {
   font-weight: 500;
 }

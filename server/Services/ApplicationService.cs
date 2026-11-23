@@ -8,11 +8,17 @@ namespace Server.Services;
 public class ApplicationService : IApplicationService
 {
     private readonly IApplicationRepository _repository;
+    private readonly IRecruiterRepository _recruiters;
     private readonly TimeProvider _time;
 
-    public ApplicationService(IApplicationRepository repository, TimeProvider time)
+    public ApplicationService(
+        IApplicationRepository repository,
+        IRecruiterRepository recruiters,
+        TimeProvider time
+    )
     {
         _repository = repository;
+        _recruiters = recruiters;
         _time = time;
     }
 
@@ -29,7 +35,7 @@ public class ApplicationService : IApplicationService
             );
         }
 
-        var errors = Validate(details);
+        var errors = await ValidateAsync(details);
         if (errors.Count > 0)
             return Result<JobApplication>.Invalid(errors);
 
@@ -46,6 +52,7 @@ public class ApplicationService : IApplicationService
             Source = Clean(details.Source),
             Url = Clean(details.Url),
             Contact = Clean(details.Contact),
+            RecruiterId = details.RecruiterId,
             Salary = Clean(details.Salary),
             NextAction = Clean(details.NextAction),
             NextActionAt = details.NextActionAt,
@@ -65,7 +72,7 @@ public class ApplicationService : IApplicationService
         ApplicationDetailsRequest request
     )
     {
-        var errors = Validate(request);
+        var errors = await ValidateAsync(request);
         if (errors.Count > 0)
             return Result<JobApplication>.Invalid(errors);
 
@@ -81,6 +88,7 @@ public class ApplicationService : IApplicationService
             Source = Clean(request.Source),
             Url = Clean(request.Url),
             Contact = Clean(request.Contact),
+            RecruiterId = request.RecruiterId,
             Salary = Clean(request.Salary),
             NextAction = Clean(request.NextAction),
             NextActionAt = request.NextActionAt,
@@ -132,12 +140,17 @@ public class ApplicationService : IApplicationService
             : Result<JobApplication>.NotFound();
     }
 
-    private static Dictionary<string, string[]> Validate(ApplicationDetailsRequest request)
+    private async Task<Dictionary<string, string[]>> ValidateAsync(
+        ApplicationDetailsRequest request
+    )
     {
         var errors = new Dictionary<string, string[]>();
 
         ValidateName(errors, "company", request.Company, "חברה");
         ValidateName(errors, "role", request.Role, "תפקיד");
+
+        if (request.RecruiterId is { } recruiterId && !await _recruiters.ExistsAsync(recruiterId))
+            errors["recruiterId"] = ["המגייס לא נמצא. ייתכן שנמחק"];
 
         return errors;
     }

@@ -10,5 +10,6 @@ public record ApplicationDetailsRequest(
     string? Salary,
     string? NextAction,
     DateOnly? NextActionAt,
-    string? Notes
+    string? Notes,
+    Guid? RecruiterId
 );

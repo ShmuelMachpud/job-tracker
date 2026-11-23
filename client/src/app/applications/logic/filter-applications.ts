@@ -9,12 +9,14 @@ export function filterApplications(
 
   return applications.filter(
     (application) =>
-      matchesStatus(application, filter.status) && matchesQuery(application, query),
+      matchesStatus(application, filter.status) &&
+      (filter.recruiterId === null || application.recruiterId === filter.recruiterId) &&
+      matchesQuery(application, query),
   );
 }
 
 export function isFilterActive(filter: ApplicationFilter): boolean {
-  return normalize(filter.query) !== '' || filter.status !== null;
+  return normalize(filter.query) !== '' || filter.status !== null || filter.recruiterId !== null;
 }
 
 function matchesStatus(application: JobApplication, status: ApplicationFilter['status']): boolean {

@@ -1,0 +1,98 @@
+<h2 mat-dialog-title>{{ existing ? 'עריכת מגייס' : 'הוספת מגייס' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <mat-dialog-content>
+    <div class="fields">
+      <mat-form-field appearance="outline">
+        <mat-label>שם</mat-label>
+        <input matInput formControlName="name" required cdkFocusInitial />
+        <mat-error>חובה למלא שם</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>סוג</mat-label>
+        <mat-select formControlName="kind">
+          @for (kind of kinds; track kind) {
+            <mat-option [value]="kind">{{ kindLabels[kind] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>חברה או סוכנות</mat-label>
+        <input matInput formControlName="company" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>טלפון</mat-label>
+        <input matInput type="tel" dir="ltr" formControlName="phone" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>מייל</mat-label>
+        <input matInput type="email" dir="ltr" formControlName="email" />
+        <mat-error>כתובת מייל לא תקינה</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>LinkedIn</mat-label>
+        <input
+          matInput
+          type="url"
+          dir="ltr"
+          formControlName="linkedIn"
+          placeholder="https://www.linkedin.com/in/..."
+        />
+        <mat-error>צריך כתובת מלאה שמתחילה ב־https://</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>קשר אחרון</mat-label>
+        <input matInput type="date" formControlName="lastContactAt" />
+      </mat-form-field>
+
+      <span></span>
+
+      <mat-form-field appearance="outline">
+        <mat-label>פעולה הבאה</mat-label>
+        <input matInput formControlName="nextAction" placeholder="למשל לשאול על משרות חדשות" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>תאריך לפעולה הבאה</mat-label>
+        <input matInput type="date" formControlName="nextActionAt" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>הערות</mat-label>
+        <textarea matInput formControlName="notes" rows="3"></textarea>
+      </mat-form-field>
+    </div>
+
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    @if (existing) {
+      <button
+        matButton
+        type="button"
+        class="delete"
+        [class.confirming]="confirmingDelete()"
+        [disabled]="busy() !== 'idle'"
+        (click)="delete()"
+      >
+        {{ deleteLabel() }}
+      </button>
+    }
+
+    <span class="spacer"></span>
+
+    <button matButton type="button" mat-dialog-close>ביטול</button>
+    <button matButton="filled" type="submit" [disabled]="busy() !== 'idle'">
+      {{ busy() === 'saving' ? 'שומר...' : 'שמירה' }}
+    </button>
+  </mat-dialog-actions>
+</form>
