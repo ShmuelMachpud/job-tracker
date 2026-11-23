@@ -1,3 +1,4 @@
+using System.Globalization;
 using AngleSharp.Html.Parser;
 using Server.Common;
 using Server.Contracts;
@@ -47,9 +48,26 @@ public class JobExtractionService : IJobExtractionService
                 Role: fields.Role,
                 Source: board ?? fields.SiteName ?? HostName(page.FinalUrl),
                 Salary: fields.Salary,
+                Notes: Notes(fields),
                 Url: url.ToString()
             )
         );
+    }
+
+    /// <summary>פרטים מהמודעה שאין להם שדה משלהם, שורה לכל פרט. null כשאין אף אחד.</summary>
+    private static string? Notes(ExtractedFields fields)
+    {
+        var lines = new[]
+        {
+            fields.Location is { } location ? $"מיקום: {location}" : null,
+            fields.EmploymentType is { } type ? $"סוג משרה: {type}" : null,
+            fields.DatePosted is { } posted
+                ? $"המודעה פורסמה: {posted.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}"
+                : null,
+        };
+
+        var found = lines.OfType<string>().ToList();
+        return found.Count == 0 ? null : string.Join('\n', found);
     }
 
     /// <summary>רק קישורי http ו־https. כתובות כמו file:// נדחות.</summary>

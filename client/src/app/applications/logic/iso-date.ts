@@ -10,6 +10,13 @@ export function todayIsoDate(): IsoDate {
   return `${year}-${month}-${day}`;
 }
 
+/** השעה עכשיו לפי השעון המקומי, בפורמט של שדה שעה בדפדפן: "09:30". */
+export function nowTimeOfDay(now = new Date()): string {
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 /** כמה ימים עברו מ־from עד to. שלילי אם to לפני from. */
