@@ -2,7 +2,9 @@
   @for (change of entries(); track $index) {
     <li>
       <app-status-badge [status]="change.status" />
-      <span class="when">{{ change.at | date: 'dd/MM/yyyy, HH:mm' }}</span>
+      <span class="when">{{
+        change.at | date: (change.dateOnly ? 'dd/MM/yyyy' : 'dd/MM/yyyy, HH:mm')
+      }}</span>
     </li>
   }
 </ol>
